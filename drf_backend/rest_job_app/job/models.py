@@ -153,4 +153,18 @@ class PreferenceMaster(models.Model):
 
 
 
+class SelectMaster(models.Model):
+    select_key = models.CharField(max_length=50)
+
+class OptionMaster(models.Model):
+    select = models.ForeignKey('SelectMaster', on_delete=models.CASCADE, related_name="options")
+    option_key = models.CharField(max_length=50)
+
+class StateMaster(models.Model):
+    name = models.CharField(max_length= 50)
+
+class CityMaster(models.Model):
+    state = models.ForeignKey('StateMaster', on_delete=models.CASCADE, related_name="cities")
+    name = models.CharField(max_length= 50)
+        
 

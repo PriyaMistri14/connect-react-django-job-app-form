@@ -1,5 +1,30 @@
 from rest_framework import serializers
-from .models import CandidateMaster, AcademicMaster,ExperienceMaster,LanguageKnownMaster,TechnologyKnownMaster,ReferenceMaster,PreferenceMaster
+from .models import CandidateMaster, AcademicMaster,ExperienceMaster,LanguageKnownMaster,TechnologyKnownMaster,ReferenceMaster,PreferenceMaster, SelectMaster, OptionMaster, StateMaster, CityMaster
+
+class SelectMasterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= SelectMaster
+        fields= '__all__'
+
+
+class OptionMasterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = OptionMaster
+        fields ='__all__'
+
+
+class StateMasterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= StateMaster
+        fields= '__all__'
+
+
+class CityMasterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CityMaster
+        fields ='__all__'
+
+
 
 
 class CandidateSerializer(serializers.ModelSerializer):
@@ -72,3 +97,17 @@ class CandidateAllSerializer(serializers.ModelSerializer):
     class Meta:
         model = CandidateMaster
         fields= '__all__'
+
+
+class SelectAllSerializer(serializers.ModelSerializer):
+    options = OptionMasterSerializer(many=True)
+    class Meta:
+        model  = SelectMaster
+        fields = '__all__'        
+
+
+class StateAllSerializer(serializers.ModelSerializer):
+    cities = CityMasterSerializer(many=True)
+    class Meta:
+        model  = StateMaster
+        fields = '__all__'                

@@ -6,6 +6,9 @@ import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik'
 import * as Yup from "yup"
 
 import React from 'react'
+import axiosIntance from '../../axiosApi'
+
+import { useEffect } from 'react'
 
 
 const getCity = (state) => {
@@ -38,18 +41,62 @@ const getCity = (state) => {
 
 let dateToTmp;
 let fromDate;
-const allLanguages = ['Hindi', 'Gujrati', 'English']
-const allTechnologies = ['PHP', 'Mysql', 'Laravel', 'Oracle']
-const allDepartments = ['Development', 'Design', 'Testing', 'HR']
-const allPreferLocations = ['Ahmedabad', 'Surat', 'Rajkot']
+// const allLanguages = ['Hindi', 'Gujrati', 'English']
+// const allTechnologies = ['PHP', 'Mysql', 'Laravel', 'Oracle']
+// const allDepartments = ['Development', 'Design', 'Testing', 'HR']
+// const allPreferLocations = ['Ahmedabad', 'Surat', 'Rajkot']
+// const allCourses = ['SSC', 'HSC', 'BECHELOR', 'MASTER']
 
 
 
+
+
+const course = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/1/")
+console.log("Courses", course.data.options)
+const allCourses = course.data.options
+
+const language = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/2/")
+console.log("allLanguages", language.data.options)
+const allLanguages = language.data.options
+
+
+const technology = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/3/")
+console.log("allTechnology", technology.data.options)
+const allTechnologies = technology.data.options
+
+
+
+const prefer_location = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/4/")
+console.log("allPreferLocation", prefer_location.data.options)
+const allPreferLocations = prefer_location.data.options
+
+
+
+const department = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/5/")
+console.log("allDepartment", department.data.options)
+const allDepartments = department.data.options
 
 
 
 
 const InputForm = () => {
+
+// useEffect(()=>{
+
+//     (async ()=>{
+//         const course = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/1/")
+//         console.log("Courses", course.data.options)
+//         allCourses = course.data.options
+//         console.log("allcourses::", allCourses)
+//     }
+
+//     )()
+
+
+// },[])
+
+
+
     return (
         <div>
             <Formik initialValues={{
@@ -69,6 +116,7 @@ const InputForm = () => {
 
                 academics: [
                     {
+                        courseName: "",
                         nameOfBoardUniversity: "",
                         passingYear: "",
                         percentage: "",
@@ -105,12 +153,12 @@ const InputForm = () => {
                     {
                         name: "",
                         contactNo: "",
-                        ralation: ""
+                        relation: ""
                     },
                     {
                         name: "",
                         contactNo: "",
-                        ralation: ""
+                        relation: ""
                     }
                 ],
 
@@ -120,33 +168,195 @@ const InputForm = () => {
                 currentCTC: "",
                 department: "",
 
-                preferLocation: [
-                    {
-                        location: []
-                    }
-                ],
+                // preferLocation: [
+                //     {
+                //         location: []
+                //     }
+                // ],
 
-                demoLocation:[]
+                demoLocation: []
 
 
 
             }}
 
                 // onSubmit={values => console.log(values)}
-                onSubmit={(values) => alert(values.demoLocation)
+                onSubmit={async (values) => {
+                    alert("Successfull!!")
+                    console.log("Form data : ", values)
+                    try {
+                        // uncomment this
+                        const resCand = await axiosIntance.post("http://127.0.0.1:8000/job/candidate/", {
+                            fname: values.fname,
+                            lname: values.lname,
+                            surname: values.surname,
+                            email: values.email,
+                            contact_no: values.phone,
+                            city: values.city,
+                            state: values.state,
+                            gender: values.gender,
+                            dob: values.dob
+                        })
+                        console.log("Response candidate created:", resCand)
+
+                        // uncommint this
+                        if (values.academics.length != 0) {
+                            const res = values.academics.map(async (academic) => {
+
+                                const resAcademics = await axiosIntance.post("http://127.0.0.1:8000/job/academic/", {
+                                    course_name: academic.courseName,
+                                    name_of_board_university: academic.nameOfBoardUniversity,
+                                    passing_year: academic.passingYear,
+                                    percentage: academic.percentage,
+                                    //    candidate: resCand.data.id  // uncomment this
+                                    candidate: 12
+                                })
+
+                                console.log("Response academic created:", resAcademics)
+                            })
+
+                            console.log("Main response academics", res)
+                        }
+
+
+                        if (values.experiences.length != 0) {
+                            const res = values.experiences.map(async (experience) => {
+
+                                const resExperience = await axiosIntance.post("http://127.0.0.1:8000/job/experience/", {
+                                    company_name: experience.companyName,
+                                    designation: experience.designation,
+                                    from_date: experience.from,
+                                    to_date: experience.to,
+                                    //    candidate: resCand.data.id  // uncomment this
+                                    candidate: 12
+                                })
+
+                                console.log("Response experience created:", resExperience)
+                            })
+
+                            console.log("Main response experience", res)
+                        }
+
+
+
+
+
+                        if (values.languages.length != 0) {
+                            const res = values.languages.map(async (language) => {
+                                if(language != undefined && language.languageName.length != 0){ 
+
+                                const resLanguage = await axiosIntance.post("http://127.0.0.1:8000/job/language/", {
+                                    language: language.languageName[0],
+                                    read: language.read,
+                                    write: language.write,
+                                    speak: language.speak,
+                                    //    candidate: resCand.data.id  // uncomment this
+                                    candidate: 12
+                                })
+                                console.log("Response language created:", resLanguage)
+                            }
+
+                            })
+
+                            console.log("Main response language", res)
+                        }
+
+
+
+                        if (values.technologies.length != 0) {
+                            const res = values.technologies.map(async (technology) => {
+                                if(technology != undefined && technology.technologyName.length != 0 ){ 
+
+                                const resTechnology = await axiosIntance.post("http://127.0.0.1:8000/job/technology/", {
+                                    technology: technology.technologyName[0],
+                                    ranting: technology.rating,                                    
+                                    //    candidate: resCand.data.id  // uncomment this
+                                    candidate: 12
+                                })
+                                console.log("Response technology created:", resTechnology)
+                            }
+
+                            })
+
+                            console.log("Main response technology", res)
+                        }
+
+
+
+
+                        if (values.references.length != 0) {
+                            const res = values.references.map(async (reference) => {                               
+
+                                const resReference = await axiosIntance.post("http://127.0.0.1:8000/job/reference/", {
+                                    refe_name: reference.name,
+                                    refe_contact_no: reference.contactNo,
+                                    refe_relation : reference.relation,
+                                    //    candidate: resCand.data.id  // uncomment this
+                                    candidate: 12
+                                })
+                                console.log("Response relation created:", resReference)
+
+
+                            })
+
+                            console.log("Main response relation ", res)
+                        }
+
+
+
+
+
+                        if (values.demoLocation.length != 0) {
+                            const res = values.demoLocation.map(async (location) => {
+
+                                const resPreference = await axiosIntance.post("http://127.0.0.1:8000/job/preference/", {
+                                    prefer_location: location,
+                                    notice_period: values.noticePeriod,
+                                    expected_ctc: values.expectedCTC,
+                                    current_ctc: values.currentCTC,
+                                    department: values.department,
+                                    //    candidate: resCand.data.id  // uncomment this
+                                    candidate: 12
+                                })
+                                console.log("Response preferences created:", resPreference)
+
+
+                            })
+
+                            console.log("Main response  preferences ", res)
+                        }
+
+
+
+
+
+
+
+
+                    } catch (error) {
+                        console.log("Error while creating candidate : ", error)
+
+                    }
+
+                }
+
                 }
 
                 validationSchema={Yup.object().shape({
                     fname: Yup.string().required("this field is required!!")
+                        .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! ")
                         .max(10, "Maximum characters allowed for this field is 10!!"),
 
                     lname: Yup.string().required("this field is required!!")
+                        .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! ")
                         .max(10, "Maximum characters allowed for this field is 10!!"),
 
                     surname: Yup.string().required("this field is required!!")
+                        .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! ")
                         .max(10, "Maximum characters allowed for this field is 10!!"),
 
-                    designation: Yup.string().required("this field is required!!"),
+                    designation: Yup.string().required("this field is required!!")
+                        .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! "),
 
 
                     email: Yup.string().email("Please enter a valid email address!!")
@@ -182,7 +392,10 @@ const InputForm = () => {
 
                     academics: Yup.array().of(Yup.object().shape(
                         {
-                            nameOfBoardUniversity: Yup.string().required("this field is required!!"),
+                            courseName: Yup.string().required("this field is required!!"),
+
+
+                            nameOfBoardUniversity: Yup.string().required("this field is required!!").matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! "),
 
 
                             passingYear: Yup.number().required("this field is required!!")
@@ -206,9 +419,11 @@ const InputForm = () => {
 
                     experiences: Yup.array().of(Yup.object().shape({
 
-                        companyName: Yup.string().required("this field is required!!"),
+                        companyName: Yup.string().required("this field is required!!")
+                            .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! "),
 
-                        designation: Yup.string().required("this field is required!!"),
+                        designation: Yup.string().required("this field is required!!")
+                            .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! "),
 
                         from: Yup.date().required("this field is required!!")
                             .max(new Date(), "Not possible")
@@ -233,13 +448,15 @@ const InputForm = () => {
 
 
                     references: Yup.array().of(Yup.object().shape({
-                        name: Yup.string().required("this field is required!!"),
+                        name: Yup.string().required("this field is required!!")
+                            .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! "),
 
                         contactNo: Yup.number().required("this field is required!!")
                             .min(1000000000, "Contact no must be of 10 digits!!")
                             .max(10000000000, "Contact no must be of 10 digits!!"),
 
-                        ralation: Yup.string().required("this field is required!!")
+                        relation: Yup.string().required("this field is required!!")
+                            .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! ")
 
                     })),
 
@@ -253,19 +470,19 @@ const InputForm = () => {
 
                     department: Yup.string().required("this field is required!!!"),
 
-                    preferLocation: Yup.array().of(Yup.object().shape({
-                        location: Yup.array().test('demolocation',"this field is required  !!!",(value)=>{
-                    
-                            return value.length > 0
-                         } )
-                    })),
+                    // preferLocation: Yup.array().of(Yup.object().shape({
+                    //     location: Yup.array().test('demolocation', "this field is required  !!!", (value) => {
 
-                    demoLocation:Yup.array().test('demolocation',"this field is required  !!!",(value)=>{
-                    
+                    //         return value.length > 0
+                    //     })
+                    // })),
+
+                    demoLocation: Yup.array().test('demolocation', "this field is required  !!!", (value) => {
+
                         return value.length > 0
-                     } )
+                    })
 
-                    
+
 
 
 
@@ -295,6 +512,8 @@ const InputForm = () => {
 
 
                 {(props) => {
+
+                    console.log("props of formik", props);
                     const { values, setFieldValue } = props
 
                     return (<Form ><br /><br />
@@ -317,9 +536,9 @@ const InputForm = () => {
                         Phone:   <Field type="text" name="phone" id="phone" /><br /><br />
                         <ErrorMessage name="phone" /><br /><br />
 
-                        Gender : <Field type="radio" name="gender" value="male" /> Male
-                        <Field type="radio" name="gender" value="female" />  Female
-                        <Field type="radio" name="gender" value="other" /> Other
+                        Gender : <Field type="radio" name="gender" value="Male" /> Male
+                        <Field type="radio" name="gender" value="Female" />  Female
+                        <Field type="radio" name="gender" value="Other" /> Other
                         <br /><br />
                         <ErrorMessage name="gender" /><br /><br />
 
@@ -380,6 +599,16 @@ const InputForm = () => {
                                             values.academics.length > 0 && values.academics.map((academic, index) => (
 
                                                 <div>
+
+                                                    Course Name : <Field as="select" name={`academics.${index}.courseName`}>
+                                                        <option selected hidden>Select course</option>
+                                                        {
+                                                            allCourses.map((course) => <option value={course.option_key}>{course.option_key}</option>)
+                                                        }
+
+
+                                                    </Field><br /><br />
+                                                    <ErrorMessage name={`academics.${index}.courseName`} /><br /><br />
 
 
                                                     Name of board or university : <Field type="text" name={`academics.${index}.nameOfBoardUniversity`} id={`academics.${index}.nameOfBoardUniversity`} /><br /><br />
@@ -462,10 +691,10 @@ const InputForm = () => {
 
                                         allLanguages.map((language, index) => (
                                             <div>
-                                                <Field name={`languages.${index}.languageName`} type='checkbox' value={language} />{language}
-                                                <Field name={`languages.${index}.read`} type='checkbox' />Read
-                                                <Field name={`languages.${index}.write`} type='checkbox' />Write
-                                                <Field name={`languages.${index}.speak`} type='checkbox' />Speak
+                                                <Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} />{language.option_key}
+                                                <Field name={`languages.${index}.read`} id={`languages.${index}.read`} type='checkbox' />Read
+                                                <Field name={`languages.${index}.write`} id={`languages.${index}.write`} type='checkbox' />Write
+                                                <Field name={`languages.${index}.speak`} id={`languages.${index}.speak`} type='checkbox' />Speak
 
                                                 <br /><br /></div>
                                         ))
@@ -488,7 +717,7 @@ const InputForm = () => {
                                             allTechnologies.map((technology, index) => (
                                                 <div>
 
-                                                    <Field name={`technologies.${index}.technologyName`} value={technology} type='checkbox' />{technology}
+                                                    <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' />{technology.option_key}
 
 
                                                     <Field name={`technologies.${index}.rating`}>
@@ -529,8 +758,8 @@ const InputForm = () => {
                                                     <ErrorMessage name={`references.${index}.contactNo`} /><br /><br />
 
 
-                                                    Relation : <Field name={`references.${index}.ralation`} type='text' /><br /><br />
-                                                    <ErrorMessage name={`references.${index}.ralation`} /><br /><br />
+                                                    Relation : <Field name={`references.${index}.relation`} type='text' /><br /><br />
+                                                    <ErrorMessage name={`references.${index}.relation`} /><br /><br />
 
                                                 </div>
                                             ))
@@ -559,90 +788,54 @@ const InputForm = () => {
                         Departmnet : <Field name='department' as='select'  >
                             <option selected hidden>Select department</option>
                             {
-                                allDepartments.map((department) => <option value={department}>{department}</option>)
+                                allDepartments.map((department) => <option value={department.option_key}>{department.option_key}</option>)
                             }
 
                         </Field><br /><br />
-                        <ErrorMessage name='department' /><br /><br />
+                        <ErrorMessage name='department' />
 
 
 
-                        <FieldArray name="preferLocation" >
-                            {
-                                () => (
-                                    <div><Field as='select' name='preferLocation[0].location' multiple >
-                                        {/* <option selected hidden >Select location</option> */}
+                        {/* <FieldArray name="preferLocation" > */}
+                        {/* { */}
+                        {/*  () => ( */}
+                        {/*  <div> */}
 
-                                        {
+                        {/*  <Field as='select' name='preferLocation[0].location' multiple   > */}
+                        {/* <option selected hidden >Select location</option> */}
+
+                        {/* {
                                             allPreferLocations.map((preferLocation) => (
-
                                                 <option value={preferLocation}>{preferLocation}</option>
-
-
-
-
                                             ))
+                                        } */}
+                        {/* </Field><br /><br /> */}
+                        {/* <ErrorMessage name='preferLocation[0].location' /> */}
+                        {/* </div> */}
+                        {/* ) */}
+                        {/* } */}
+                        {/* </FieldArray><br /><br /> */}
 
 
 
-                                        }
 
+                        Prefer Location : <Field as='select' name='demoLocation' multiple >
+                            {/* <option selected hidden >Select location</option> */}
 
+                            {
+                                allPreferLocations.map((preferLocation) => (
 
+                                    <option value={preferLocation.option_key}>{preferLocation.option_key}</option>
 
-                                    </Field><br /><br />
-                                    <ErrorMessage name='preferLocation[0].location' />
-                                    </div>
-
-                                )
-
+                                ))
 
                             }
 
 
 
-                        </FieldArray><br /><br />
-                        <Field as='select' name='demoLocation' multiple >
-                                        {/* <option selected hidden >Select location</option> */}
 
-                                        {
-                                            allPreferLocations.map((preferLocation) => (
-
-                                                <option value={preferLocation}>{preferLocation}</option>
-
-
-
-
-                                            ))
-
-
-
-                                        }
-
-
-
-
-                                    </Field><br /><br />
-                                    <ErrorMessage name='demoLocation' /><br /><br />
-
-                        
-                     
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                        </Field><br /><br />
+                        <ErrorMessage name='demoLocation' /><br /><br />
 
                         <button type='submit'>Submit</button>
 

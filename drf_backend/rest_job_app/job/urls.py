@@ -13,10 +13,16 @@ router.register('technology', views.TechnologyViewSet, basename="technology")
 router.register('reference', views.ReferenceViewSet, basename="reference")
 router.register('preference', views.PreferenceViewSet, basename="preference")
 router.register('candidate_all', views.CandidateAllViewSet, basename="candidate_all")
+router.register('select', views.SelectViewSet, basename="select")
+router.register('option', views.OptionViewSet, basename="option")
+router.register('select_all', views.SelectAllViewSet, basename="select_all")
+router.register('state', views.StateViewSet, basename="state")
+router.register('city', views.CityViewSet, basename="city")
+router.register('state_all', views.StateAllViewSet, basename="state_all")
 
 
 
 urlpatterns = [
     path('job/',include(router.urls)),
-    # path('job/logout/', views.Logout.as_view(), name="logout")
+    path('job/logout/', views.Logout.as_view(), name="logout")
 ]

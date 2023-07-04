@@ -35,28 +35,32 @@ function LoginForm() {
     })
 
 
-    const onSubmit = async (values) => {
-        console.log('form values::', values)
-        const res = await axiosIntance.post('http://127.0.0.1:8000/login/', {
-            username: values.username,
-            password: values.password
-        })
-        console.log(' response tokens:', res)
+    const onSubmit = async (values, form) => {
+        console.log('form values::', values, "form::", form)
 
-        axiosIntance.defaults.headers['Authorization'] = 'JWT ' + res.data.access
-        localStorage.setItem("access_token", res.data.access)
-        localStorage.setItem("refresh_token", res.data.refresh)
-        console.log('local storage values:  access token', localStorage.getItem("access_token"), "refresh token : ", localStorage.getItem("refresh_token"))
-         navigate("/input-form/")
-        // console.log('comparision: ', res.data.access == localStorage.getItem("access_token"))
-        // const candidates = await axiosIntance.get("http://127.0.0.1:8000/job/candidate/")/
-        // const candidate_all = await axiosIntance.get("http://127.0.0.1:8000/job/candidate_all/")
-        
+        try {
 
-        // axios.defaults.headers['Authorization'] ='JWT ' + localStorage.getItem("access_token")
+            const res = await axiosIntance.post('http://127.0.0.1:8000/login/', {
+                username: values.username,
+                password: values.password
+            })
+            console.log(' response tokens:', res)
 
-        // console.log("only candidate:",candidates)
-        // console.log("candidate_all::",candidate_all)
+            axiosIntance.defaults.headers['Authorization'] = 'JWT ' + res.data.access
+            localStorage.setItem("access_token", res.data.access)
+            localStorage.setItem("refresh_token", res.data.refresh)
+            console.log('local storage values:  access token', localStorage.getItem("access_token"), "refresh token : ", localStorage.getItem("refresh_token"))
+            navigate("/input-form/")
+
+        } catch (error) {
+            console.log("Error while login with invalid credential:", error.response.data.detail)
+
+            if (error.response.data.detail === "No active account found with the given credentials") {
+                form.setFieldError("password", "No active account found with the given credentials")
+
+            }
+
+        }
     }
 
 

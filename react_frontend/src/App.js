@@ -52,10 +52,17 @@ function App() {
 
 
   const logoutHandler = async()=>{
-    const res = await axiosIntance.post("http://127.0.0.1:8000/job/logout/",{
-      refresh_token : localStorage.getItem("refresh_token")
-    })
-console.log("res after blacklisting::", res)
+
+    try{
+
+      const res = await axiosIntance.post("http://127.0.0.1:8000/job/logout/",{
+        refresh_token : localStorage.getItem("refresh_token")
+      })
+
+    }
+    catch(error){
+      console.log("Error while blacklisting tthe token :::::", error)
+    }
 
     console.log("Before log out value of token ::", axiosIntance.defaults.headers["Authorization"])
     axiosIntance.defaults.headers["Authorization"] = null
@@ -73,11 +80,15 @@ console.log("res after blacklisting::", res)
     <div className="App">
       <nav className='nav-bar'>
         {
-          axiosIntance.defaults.headers['Authorization'] === null ? 
+          localStorage.getItem("access_token") 
+          && axiosIntance.defaults.headers['Authorization'] 
+          && <span  onClick={logoutHandler}>Log Out</span> || <Link to="/login/" className='nav-link'>Login</Link>
+
+
+          // localStorage.getItem("access_token") === null && axiosIntance.defaults.headers['Authorization'] === null ? 
           
-           <Link to="/login/" className='nav-link'>Login</Link>
-           :  <a  onClick={logoutHandler}>Log Out</a>
-           
+          //  <Link to="/login/" className='nav-link'>Login</Link>
+          //  :  <span  onClick={logoutHandler}>Log Out</span>   
 
 
 

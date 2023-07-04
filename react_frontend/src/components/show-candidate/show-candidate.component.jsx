@@ -22,7 +22,7 @@ function ShowCandidate() {
     useEffect(() => {
         (async () => {
             try{
-                if(localStorage.getItem("access_token")){
+                if(localStorage.getItem("access_token") && axiosIntance.defaults.headers['Authorization']){
 
                     const res = await axiosIntance.get("http://127.0.0.1:8000/job/candidate_all/")
                     console.log("resopnseeee:", res)
