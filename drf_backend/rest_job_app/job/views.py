@@ -10,6 +10,9 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 
 
+from django.core.serializers import json # for getcities
+
+
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
@@ -126,6 +129,7 @@ class PreferenceViewSet(viewsets.ModelViewSet):
 # uncommet this
 class Logout(APIView):
     def post(self, request):
+        
         print("request///////////////////////////", request.data['refresh_token'])
 
         try:
@@ -138,4 +142,30 @@ class Logout(APIView):
             return Response({"logout":"Log out successfully!!"})
         except Exception as e:
             return Response({"error":"Error occurs while log out!!"})    
+
+
+class GetCities(APIView):
+    def post(self, request):
+        
+        print("In get cities : ", request.data['state'])
+        try:
+            state = request.data['state']
+            state_obj = StateMaster.objects.filter(name=state).first()
+            print("state id/////", state_obj)
+            
+            state_id = state_obj.id
+            print("state id/////", state_id)
+            cities = CityMaster.objects.filter(state=state_obj).values()
+            print("Citiesssssssssss: ", cities)
+            # json_serializer = json.Serializer()
+            # json_serialized = json_serializer.serialize(cities)
+            # data = serializers.serialize('json',cities)
+            # print("dataaa/////////////////////////", data)
+
+
+            return Response({"fetched_cities":cities})
+
+        except Exception as e:
+            return Response({"error":"Error occurs while fetching cities!!"}) 
+
 

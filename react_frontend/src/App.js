@@ -3,7 +3,7 @@ import './App.css';
 
 import InputForm from './components/input-form/input-form.component';
 
-import React , {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
@@ -17,6 +17,8 @@ import ShowCandidate from './components/show-candidate/show-candidate.component'
 import { Routes, Route, Link } from "react-router-dom";
 
 import { useNavigate } from 'react-router-dom';
+import UpdateForm from './components/update-form/update-form.component';
+import Update from './components/update/update.component';
 
 
 
@@ -43,7 +45,7 @@ function App() {
 
   //     }
   //   }
-      
+
   //   )()
 
   // },[])
@@ -51,16 +53,16 @@ function App() {
   const navigate = useNavigate()
 
 
-  const logoutHandler = async()=>{
+  const logoutHandler = async () => {
 
-    try{
+    try {
 
-      const res = await axiosIntance.post("http://127.0.0.1:8000/job/logout/",{
-        refresh_token : localStorage.getItem("refresh_token")
+      const res = await axiosIntance.post("http://127.0.0.1:8000/job/logout/", {
+        refresh_token: localStorage.getItem("refresh_token")
       })
 
     }
-    catch(error){
+    catch (error) {
       console.log("Error while blacklisting tthe token :::::", error)
     }
 
@@ -80,13 +82,13 @@ function App() {
     <div className="App">
       <nav className='nav-bar'>
         {
-          localStorage.getItem("access_token") 
-          && axiosIntance.defaults.headers['Authorization'] 
-          && <span  onClick={logoutHandler}>Log Out</span> || <Link to="/login/" className='nav-link'>Login</Link>
+          localStorage.getItem("access_token")
+          && axiosIntance.defaults.headers['Authorization']
+          && <span onClick={logoutHandler}>Log Out</span> || <Link to="/login/" className='nav-link'>Login</Link>
 
 
           // localStorage.getItem("access_token") === null && axiosIntance.defaults.headers['Authorization'] === null ? 
-          
+
           //  <Link to="/login/" className='nav-link'>Login</Link>
           //  :  <span  onClick={logoutHandler}>Log Out</span>   
 
@@ -105,6 +107,9 @@ function App() {
         <Route path="/register/" element={<RegistrationForm />} />
         <Route path="/input-form/" element={<InputForm />} />
         <Route path="/show-candidate/" element={<ShowCandidate />} />
+        {/* <Route path="/update-form/:candidate" element={<UpdateForm />} /> */}
+        <Route path="/update/:candidate" element={<Update />} />
+      
       </Routes>
 
 

@@ -24,5 +24,6 @@ router.register('state_all', views.StateAllViewSet, basename="state_all")
 
 urlpatterns = [
     path('job/',include(router.urls)),
-    path('job/logout/', views.Logout.as_view(), name="logout")
+    path('job/logout/', views.Logout.as_view(), name="logout"),
+    path('job/getCities/', views.GetCities.as_view(), name="getCities")
 ]
