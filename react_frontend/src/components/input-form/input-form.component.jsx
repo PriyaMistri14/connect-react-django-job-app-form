@@ -228,8 +228,8 @@ const InputForm = () => {
                                     name_of_board_university: academic.nameOfBoardUniversity,
                                     passing_year: academic.passingYear,
                                     percentage: academic.percentage,
-                                    //    candidate: resCand.data.id  // uncomment this
-                                    candidate: 12
+                                       candidate: resCand.data.id  // uncomment this
+                                    // candidate: 13
                                 })
 
                                 console.log("Response academic created:", resAcademics)
@@ -247,8 +247,8 @@ const InputForm = () => {
                                     designation: experience.designation,
                                     from_date: experience.from,
                                     to_date: experience.to,
-                                    //    candidate: resCand.data.id  // uncomment this
-                                    candidate: 12
+                                       candidate: resCand.data.id  // uncomment this
+                                    // candidate: 13
                                 })
 
                                 console.log("Response experience created:", resExperience)
@@ -270,8 +270,8 @@ const InputForm = () => {
                                     read: language.read,
                                     write: language.write,
                                     speak: language.speak,
-                                    //    candidate: resCand.data.id  // uncomment this
-                                    candidate: 12
+                                       candidate: resCand.data.id  // uncomment this
+                                    // candidate: 13
                                 })
                                 console.log("Response language created:", resLanguage)
                             }
@@ -290,8 +290,8 @@ const InputForm = () => {
                                 const resTechnology = await axiosIntance.post("http://127.0.0.1:8000/job/technology/", {
                                     technology: technology.technologyName[0],
                                     ranting: technology.rating,                                    
-                                    //    candidate: resCand.data.id  // uncomment this
-                                    candidate: 12
+                                       candidate: resCand.data.id  // uncomment this
+                                    // candidate: 13
                                 })
                                 console.log("Response technology created:", resTechnology)
                             }
@@ -311,8 +311,8 @@ const InputForm = () => {
                                     refe_name: reference.name,
                                     refe_contact_no: reference.contactNo,
                                     refe_relation : reference.relation,
-                                    //    candidate: resCand.data.id  // uncomment this
-                                    candidate: 12
+                                       candidate: resCand.data.id  // uncomment this
+                                    // candidate: 13
                                 })
                                 console.log("Response relation created:", resReference)
 
@@ -335,8 +335,8 @@ const InputForm = () => {
                                     expected_ctc: values.expectedCTC,
                                     current_ctc: values.currentCTC,
                                     department: values.department,
-                                    //    candidate: resCand.data.id  // uncomment this
-                                    candidate: 12
+                                       candidate: resCand.data.id  // uncomment this
+                                    // candidate: 13
                                 })
                                 console.log("Response preferences created:", resPreference)
 
