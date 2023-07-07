@@ -162,7 +162,7 @@ const Update = () => {
 
         candidates.languages != undefined && candidates.languages.length != 0 && candidates.languages.map((ln) => {
             const ln_obj = {
-                languageName: ln.language,
+                languageName: [ln.language],
                 read: ln.read,
                 write: ln.write,
                 speak: ln.speak
@@ -287,7 +287,32 @@ const Update = () => {
 
 
     }
-    console.log("initial valuaes lname :", initialValues, initialValues.lname);
+    console.log("initial valuaes lname :", initialValues, initialValues.languages);
+
+
+
+    const acde_ids = allData[6] && allData[6].academics.map((ac) => ac.id)
+    console.log("ACADEMICS IDDDDD:", acde_ids);
+
+    const expe_ids = allData[6] && allData[6].experiences.map((ex) => ex.id)
+    console.log("EXPERIENCES IDDDDD:", expe_ids);
+
+    const lang_ids = allData[6] && allData[6].languages.map((ln) => ln.id)
+    console.log("LANGUAGES IDDDDD:", lang_ids);
+
+    const tech_ids = allData[6] && allData[6].technologies.map((tn) => tn.id)
+    console.log("TECHNOLOGY IDDDDD:", tech_ids);
+
+    const refe_ids = allData[6] && allData[6].references.map((rf) => rf.id)
+    console.log("REFERENCES IDDDDD:", refe_ids);
+
+
+    const pref_ids = allData[6] && allData[6].preferences.map((pr) => pr.id)
+    console.log("PREFERENCES IDDDDD:", pref_ids);
+
+
+
+
 
 
 
@@ -308,7 +333,636 @@ const Update = () => {
 
                 onSubmit={async (values) => {
                     alert("Successfull!!")
-                    console.log("Form data : ", values)
+                    console.log("Form data : ", values.technologies)
+
+
+                    try {
+                        console.log("CANDIDATE IDDD", candidate);
+
+                        const resCand = await axiosIntance.put(`http://127.0.0.1:8000/job/candidate/${candidate}/`, {
+                            fname: values.fname,
+                            lname: values.lname,
+                            surname: values.surname,
+                            email: values.email,
+                            contact_no: values.phone,
+                            city: values.city,
+                            state: values.state,
+                            gender: values.gender,
+                            dob: values.dob
+                        })
+                        console.log("Response candidate updated:", resCand)
+
+
+
+
+
+                        //academicc
+
+                        if (values.academics.length != 0) {
+                            console.log("CAND IDDD AND ACADE IDD", candidate, acde_ids);
+                            if (values.academics.length === acde_ids.length) {
+
+                                for (var i = 0; i < values.academics.length; i++) {
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/academic/${acde_ids[i]}/`, {
+                                        course_name: values.academics[i].courseName,
+                                        name_of_board_university: values.academics[i].nameOfBoardUniversity,
+                                        passing_year: values.academics[i].passingYear,
+                                        percentage: values.academics[i].percentage,
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response academic updated:", resAcademics)
+                                }
+                            }
+
+                            // inset this record
+
+                            else if (values.academics.length >= acde_ids.length) {
+
+                                for (var i = 0; i < acde_ids.length; i++) {
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/academic/${acde_ids[i]}/`, {
+                                        course_name: values.academics[i].courseName,
+                                        name_of_board_university: values.academics[i].nameOfBoardUniversity,
+                                        passing_year: values.academics[i].passingYear,
+                                        percentage: values.academics[i].percentage,
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response academic updated:", resAcademics)
+                                }
+
+
+                                for (var i = acde_ids.length; i < values.academics.length; i++) {
+
+                                    const resAcademics = await axiosIntance.post("http://127.0.0.1:8000/job/academic/", {
+                                        course_name: values.academics[i].courseName,
+                                        name_of_board_university: values.academics[i].nameOfBoardUniversity,
+                                        passing_year: values.academics[i].passingYear,
+                                        percentage: values.academics[i].percentage,
+                                        candidate: candidate   // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response academic created:", resAcademics)
+
+                                }
+
+
+
+                            }
+
+
+                            // delete academics
+                            else if (values.academics.length <= acde_ids.length) {
+                                for (var i = 0; i < values.academics.length; i++) {
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/academic/${acde_ids[i]}/`, {
+                                        course_name: values.academics[i].courseName,
+                                        name_of_board_university: values.academics[i].nameOfBoardUniversity,
+                                        passing_year: values.academics[i].passingYear,
+                                        percentage: values.academics[i].percentage,
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response academic updated:", resAcademics)
+                                }
+
+
+                                for (var i = values.academics.length; i < acde_ids.length; i++) {
+                                    const resAcademics = await axiosIntance.delete(`http://127.0.0.1:8000/job/academic/${acde_ids[i]}/`)
+
+                                    console.log("Response academic deleted:", resAcademics)
+                                }
+
+
+
+                            }
+                        }
+
+
+                        // experinces
+
+                        if (values.experiences.length != 0) {
+                            if (values.experiences.length === expe_ids.length) {
+                                console.log("CAND IDDD AND EXPE IDD IN IF", candidate, expe_ids);
+                                for (var i = 0; i < values.experiences.length; i++) {
+                                    const resExpe = await axiosIntance.put(`http://127.0.0.1:8000/job/experience/${expe_ids[i]}/`, {
+                                        company_name: values.experiences[i].companyName,
+                                        designation: values.experiences[i].designation,
+                                        from_date: values.experiences[i].from,
+                                        to_date: values.experiences[i].to,
+                                        candidate: candidate
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response experince updated :", resExpe)
+                                }
+                            }
+
+                            // inset this record
+
+                            else if (values.experiences.length >= expe_ids.length) {
+
+                                for (var i = 0; i < expe_ids.length; i++) {
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/experience/${expe_ids[i]}/`, {
+                                        company_name: values.experiences[i].companyName,
+                                        designation: values.experiences[i].designation,
+                                        from_date: values.experiences[i].from,
+                                        to_date: values.experiences[i].to,
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response experience updated:", resAcademics)
+                                }
+
+
+                                for (var i = expe_ids.length; i < values.experiences.length; i++) {
+
+                                    const resAcademics = await axiosIntance.post("http://127.0.0.1:8000/job/experience/", {
+                                        company_name: values.experiences[i].companyName,
+                                        designation: values.experiences[i].designation,
+                                        from_date: values.experiences[i].from,
+                                        to_date: values.experiences[i].to,
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response exxperience created:", resAcademics)
+
+                                }
+
+
+
+                            }
+
+
+                            // delete experience
+                            else if (values.experiences.length <= expe_ids.length) {
+                                for (var i = 0; i < values.experiences.length; i++) {
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/experince/${expe_ids[i]}/`, {
+                                        company_name: values.experiences[i].companyName,
+                                        designation: values.experiences[i].designation,
+                                        from_date: values.experiences[i].from,
+                                        to_date: values.experiences[i].to,
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response experience updated :", resAcademics)
+                                }
+
+
+                                for (var i = values.experiences.length; i < expe_ids.length; i++) {
+                                    const resAcademics = await axiosIntance.delete(`http://127.0.0.1:8000/job/experience/${expe_ids[i]}/`)
+
+                                    console.log("Response experience  deleted:", resAcademics)
+                                }
+
+
+
+                            }
+                        }
+
+
+
+                        //languages 
+
+
+
+                        if (values.languages.length != 0) {
+                            console.log("IN IF OF LANG>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", values.languages);
+                            if (values.languages.length === lang_ids.length) {
+                                console.log("IN IF IF OF LANG>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", values.languages);
+                                for (var i = 0; i < values.languages.length; i++) {
+
+                                    if(values.languages[i].languageName.length !== 0){
+                                        console.log("iiiiFFFFFFFFFFFFFFFFFFF;;;;;;;;;;;;;;;;;;;;;;........",values.languages[i].languageName[0]);
+
+                                    const resExpe = await axiosIntance.put(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`, {
+                                        language: values.languages[i].languageName[0],
+                                        read: values.languages[i].read,
+                                        write: values.languages[i].write,
+                                        speak: values.languages[i].speak,
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response language updated:", resExpe)
+                                
+                                }else{
+                                    console.log("DELETE");
+
+                                    const resAcademics = await axiosIntance.delete(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`)
+
+                                            console.log("Response language deleted :", resAcademics)
+
+                                }
+                               
+                            }
+                                
+                            }
+
+                            // inset this record
+
+                            else if (values.languages.length >= lang_ids.length) {
+
+                                for (var i = 0; i < lang_ids.length; i++) {
+       
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`, {
+                                        language: values.languages[i].languageName[0],
+                                        read: values.languages[i].read,
+                                        write: values.languages[i].write,
+                                        speak: values.languages[i].speak,
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response language updated:", resAcademics)
+                                
+                            }
+
+
+                                for (var i = lang_ids.length; i < values.languages.length; i++) {
+                               
+
+                                    const resAcademics = await axiosIntance.post("http://127.0.0.1:8000/job/language/", {
+                                        language: values.languages[i].languageName[0],
+                                        read: values.languages[i].read,
+                                        write: values.languages[i].write,
+                                        speak: values.languages[i].speak,
+                                        candidate: candidate   // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response language created:", resAcademics)
+
+                               
+                            }
+
+
+
+                            }
+
+
+                            // delete experience
+                            // else if (values.languages.length <= lang_ids.length) {
+                            //     for (var i = 0; i < values.languages.length; i++) {
+                            //         if(typeof(values.languages[i].languageName) === String ){
+                            //         const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`, {
+                            //             language: values.languages[i].languageName,
+                            //             read: values.languages[i].read,
+                            //             write: values.languages[i].write,
+                            //             speak: values.languages[i].speak,
+                            //             candidate: candidate // uncomment this
+                            //             // candidate: 13
+                            //         })
+
+                            //         console.log("Response language updated:", resAcademics)
+                            //     }else if(values.languages[i].languageName != []){
+
+                            //         const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`, {
+                            //             language: values.languages[i].languageName[0],
+                            //             read: values.languages[i].read,
+                            //             write: values.languages[i].write,
+                            //             speak: values.languages[i].speak,
+                            //             candidate: candidate // uncomment this
+                            //             // candidate: 13
+                            //         })
+
+                            //         console.log("Response language updated:", resAcademics)
+
+                            //     }
+                            // }
+
+
+                            //     for (var i = values.languages.length; i < lang_ids.length; i++) {
+                            //         if(typeof(values.languages[i].languageName) === String ){
+                            //         const resAcademics = await axiosIntance.delete(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`)
+
+                            //         console.log("Response language deleted :", resAcademics)
+                            //     }else if(values.languages[i].languageName != []){
+                            //         const resAcademics = await axiosIntance.delete(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`)
+
+                            //         console.log("Response language deleted :", resAcademics)
+
+
+                            //     }}
+
+
+
+                            // }
+                        }
+
+
+
+
+                        // technology
+
+
+
+
+
+                        if (values.technologies.length != 0) {
+                            console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@technology ", values.technologies);
+                            if (values.technologies.length === tech_ids.length) {
+                                for (var i = 0; i < values.technologies.length; i++) {
+                                    if(typeof(values.technologies[i].technologyName) === String ){
+                                      
+                                        console.log("technology ;;;;;;;;;;;;;;;;;",values.technologies[i].technologyName,"rating ;;;;;;;;;;;;;;;", values.technologies[i].rating );
+                                        const resExpe = await axiosIntance.put(`http://127.0.0.1:8000/job/technology/${tech_ids[i]}/`, {
+                                            technology: values.technologies[i].technologyName,
+                                            ranting: values.technologies[i].rating,
+    
+                                            candidate: candidate  // uncomment this
+                                            // candidate: 13
+                                            })
+                                        
+    
+                                        console.log("Response technology updated:", resExpe)
+                                    }
+                                    else{
+                                        console.log("YYYYY blank tech",values.technologies[i].technologyName);
+                              
+                                   
+                                    }
+                                }
+                            }
+
+                            // inset this record
+
+                            else if (values.technologies.length >= tech_ids.length) {
+
+                                for (var i = 0; i < tech_ids.length; i++) {
+                                    if(typeof(values.technologies[i].technologyName) === String ){
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/technology/${tech_ids[i]}/`, {
+                                        technology: values.technologies[i].technologyName,
+                                        ranting: values.technologies[i].rating,
+
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response technology updated :", resAcademics)
+                                }
+                                }
+
+
+                                for (var i = tech_ids.length; i < values.technologies.length; i++) {
+                                    if(typeof(values.technologies[i].technologyName) === String ){
+
+                                    const resAcademics = await axiosIntance.post("http://127.0.0.1:8000/job/technology/", {
+                                        technology: values.technologies[i].technologyName,
+                                        ranting: values.technologies[i].rating,
+
+
+                                        candidate: candidate   // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response technology created:", resAcademics)
+
+                                }}
+
+
+
+                            }
+
+
+                            // delete technology
+                            else if (values.technologies.length <= tech_ids.length) {
+                                for (var i = 0; i < values.technologies.length; i++) {
+                                    if(typeof(values.technologies[i].technologyName) === String ){
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/technology/${tech_ids[i]}/`, {
+                                        technology: values.technologies[i].technologyName,
+                                        ranting: values.technologies[i].read,
+
+
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response technology updated:", resAcademics)
+                                }}
+
+
+                                for (var i = values.technologies.length; i < tech_ids.length; i++) {
+                                    if(typeof(values.technologies[i].technologyName) === String ){
+                                    
+                                    const resAcademics = await axiosIntance.delete(`http://127.0.0.1:8000/job/technology/${tech_ids[i]}/`)
+
+                                    console.log("Response academic deleted:", resAcademics)
+                                }}
+
+
+
+                            }
+                        }
+
+
+
+
+
+                        // references 
+
+
+
+
+                        if (values.references.length != 0) {
+                            if (values.references.length === refe_ids.length) {
+                                for (var i = 0; i < values.references.length; i++) {
+                                    const resExpe = await axiosIntance.put(`http://127.0.0.1:8000/job/reference/${refe_ids[i]}/`, {
+                                        refe_name: values.references[i].name,
+                                        refe_contact_no: values.references[i].contactNo,
+                                        refe_relation: values.references[i].relation,
+
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response reference updated:", resExpe)
+                                }
+                            }
+
+                            // inset this record
+
+                            else if (values.references.length >= refe_ids.length) {
+
+                                for (var i = 0; i < refe_ids.length; i++) {
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/reference/${refe_ids[i]}/`, {
+                                        refe_name: values.references[i].name,
+                                        refe_contact_no: values.references[i].contactNo,
+                                        refe_relation: values.references[i].relation,
+
+                                        candidate: candidate // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response reference updated:", resAcademics)
+                                }
+
+
+                                for (var i = refe_ids.length; i < values.references.length; i++) {
+
+                                    const resAcademics = await axiosIntance.post("http://127.0.0.1:8000/job/reference/", {
+                                        refe_name: values.references[i].name,
+                                        refe_contact_no: values.references[i].contactNo,
+                                        refe_relation: values.references[i].relation,
+
+
+                                        candidate: candidate   // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response reference created:", resAcademics)
+
+                                }
+
+
+
+                            }
+
+
+                            // delete technology
+                            else if (values.references.length <= refe_ids.length) {
+                                for (var i = 0; i < values.references.length; i++) {
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/reference/${refe_ids[i]}/`, {
+                                        refe_name: values.references[i].name,
+                                        refe_contact_no: values.references[i].contactNo,
+                                        refe_relation: values.references[i].relation,
+
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response reference updated:", resAcademics)
+                                }
+
+
+                                for (var i = values.references.length; i < refe_ids.length; i++) {
+                                    const resAcademics = await axiosIntance.delete(`http://127.0.0.1:8000/job/reference/${refe_ids[i]}/`)
+
+                                    console.log("Response reference deleted:", resAcademics)
+                                }
+
+
+
+                            }
+                        }
+
+
+
+
+
+                        // preferences
+
+
+
+
+
+                        if (values.demoLocation.length != 0) {
+                            if (values.demoLocation.length === pref_ids.length) {
+                                for (var i = 0; i < values.demoLocation.length; i++) {
+                                    const resExpe = await axiosIntance.put(`http://127.0.0.1:8000/job/preference/${pref_ids[i]}/`, {
+                                        prefer_location: values.demoLocation[i],
+                                        notice_period: values.noticePeriod,
+                                        expected_ctc: values.expectedCTC,
+                                        current_ctc: values.currentCTC,
+                                        department: values.department,
+
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response preference updated:", resExpe)
+                                }
+                            }
+
+                            // inset this record
+
+                            else if (values.demoLocation.length >= pref_ids.length) {
+
+                                for (var i = 0; i < pref_ids.length; i++) {
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/preference/${pref_ids[i]}/`, {
+                                        prefer_location: values.demoLocation[i],
+                                        notice_period: values.noticePeriod,
+                                        expected_ctc: values.expectedCTC,
+                                        current_ctc: values.currentCTC,
+                                        department: values.department,
+
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response preference updated:", resAcademics)
+                                }
+
+
+                                for (var i = pref_ids.length; i < values.demoLocation.length; i++) {
+
+                                    const resAcademics = await axiosIntance.post("http://127.0.0.1:8000/job/preference/", {
+                                        prefer_location: values.demoLocation[i],
+                                        notice_period: values.noticePeriod,
+                                        expected_ctc: values.expectedCTC,
+                                        current_ctc: values.currentCTC,
+                                        department: values.department,
+
+
+                                        candidate: candidate   // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response preference created:", resAcademics)
+
+                                }
+
+
+
+                            }
+
+
+                            // delete technology
+                            else if (values.demoLocation.length <= pref_ids.length) {
+                                for (var i = 0; i < values.demoLocation.length; i++) {
+                                    const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/preference/${pref_ids[i]}/`, {
+                                        prefer_location: values.demoLocation[i],
+                                        notice_period: values.noticePeriod,
+                                        expected_ctc: values.expectedCTC,
+                                        current_ctc: values.currentCTC,
+                                        department: values.department,
+
+                                        candidate: candidate  // uncomment this
+                                        // candidate: 13
+                                    })
+
+                                    console.log("Response preference updated:", resAcademics)
+                                }
+
+
+                                for (var i = values.demoLocation.length; i < pref_ids.length; i++) {
+                                    const resAcademics = await axiosIntance.delete(`http://127.0.0.1:8000/job/preference/${pref_ids[i]}/`)
+
+                                    console.log("Response preference deleted:", resAcademics)
+                                }
+
+
+
+                            }
+                        }
+
+                        // window.location.reload()
+
+                    } catch (error) {
+                        console.log("Error while updating candidate : ", error)
+
+                    }
+
+
+
+
+
 
                 }
 
@@ -462,7 +1116,8 @@ const Update = () => {
 
                 {(props) => {
 
-                    const a = []
+                    var a = []
+                    var b = []
 
                     console.log("props of formik", props);
                     const { values, setFieldValue, setValues } = props
@@ -683,33 +1338,45 @@ const Update = () => {
                                     <div>{
 
                                         allLanguages.map((language, index) => {
-                                            // {
+                                            {
+                                                b = []
+                                            }
 
-                                            //     values.languages && values.languages.length != 0 && values.languages.map((lang) => {
-                                            //         lang === language && <div><Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} selected />{language.option_key}</div>
-                                            //     })
-
-                                            // }
 
 
                                             return <div>
 
-
                                                 {
 
+                                                    values.languages && values.languages.length != 0 && values.languages.map((lang) => {
 
+                                                        // console.log("lang", lang, "language", language.option_key);
+                                                        if (lang.languageName[0] === language.option_key) {
+                                                            b.push(lang.languageName[0])
+
+                                                            return <div><Field name={`languages.${index}.languageName`} type='checkbox' value={lang.languageName[0]} checked />{lang.languageName[0]}
+                                                            
+                                                            
+                                                            </div>
+                                                        }
+
+
+                                                    })
 
                                                 }
-                                                {/* value={language.option_key}  value={technology.option_key}     && values.languages.length != 0 && values.languages.map((lang) => {
-                                                        lang === language && <div><Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} selected />{language.option_key}</div>
-                                                    })*/}
+                                                {
+                                                    b.includes(language.option_key) ? null : <div><Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} />{language.option_key}</div>
 
-                                                <Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} />{language.option_key}
+                                                }
+
+                                                {/* <Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} />{language.option_key} */}
                                                 <Field name={`languages.${index}.read`} id={`languages.${index}.read`} type='checkbox' />Read
                                                 <Field name={`languages.${index}.write`} id={`languages.${index}.write`} type='checkbox' />Write
                                                 <Field name={`languages.${index}.speak`} id={`languages.${index}.speak`} type='checkbox' />Speak
 
-                                                <br /><br /></div>
+                                                <br /><br />
+
+                                            </div>
                                         })
 
                                     }
@@ -727,167 +1394,98 @@ const Update = () => {
                                 () => (
                                     <div>
                                         {
-                                            allTechnologies.map((technology, index) => (
+                                            allTechnologies.map((technology, index) => {
+                                                {
+                                                    a = []
+                                                }
 
-                                                <div>
+                                                return <div>
                                                     {
 
                                                         values.technologies && values.technologies.length != 0 && values.technologies.map((tech) => {
                                                             {
-                                                                console.log("tech", tech, "technology", technology.option_key);
+                                                                // console.log("tech", tech, "technology", technology.option_key);
+
 
                                                                 if (tech.technologyName === technology.option_key) {
-                                                                  
-                                                                    return <div><Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' checked />{technology.option_key} </div>
-
-                                                                }
-                                                                else {
                                                                     a.push(tech.technologyName)
-                                                                  
 
+                                                                    return <div>
+                                                                        <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' checked />{technology.option_key}
+                                                                        {
+                                                                            tech.rating === 3 && <Field name={`technologies.${index}.rating`}>
+                                                                                {
+                                                                                    ({ Field, meta, form }) => (
+
+                                                                                        <div>
+                                                                                            <input type='radio' name={`technologyRadio${index}`} value='3' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 3)} checked />Begginer
+                                                                                            <input type='radio' name={`technologyRadio${index}`} value='6' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 6)} />Mediator
+                                                                                            <input type='radio' name={`technologyRadio${index}`} value='10' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 10)} />Expert
+                                                                                        </div>
+
+                                                                                    )}
+                                                                            </Field>
+                                                                        }
+                                                                        {
+                                                                            tech.rating === 6 && <Field name={`technologies.${index}.rating`}>
+                                                                                {
+                                                                                    ({ Field, meta, form }) => (
+
+                                                                                        <div>
+                                                                                            <input type='radio' name={`technologyRadio${index}`} value='3' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 3)} />Begginer
+                                                                                            <input type='radio' name={`technologyRadio${index}`} value='6' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 6)} checked />Mediator
+                                                                                            <input type='radio' name={`technologyRadio${index}`} value='10' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 10)} />Expert
+                                                                                        </div>
+                                                                                    )
+                                                                                }
+                                                                            </Field>
+                                                                        }
+
+                                                                        {
+                                                                            tech.rating === 10 &&
+                                                                            <Field name={`technologies.${index}.rating`}>
+                                                                                {
+                                                                                    ({ Field, meta, form }) => (
+
+                                                                                        <div>
+                                                                                            <input type='radio' name={`technologyRadio${index}`} value='3' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 3)} />Begginer
+                                                                                            <input type='radio' name={`technologyRadio${index}`} value='6' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 6)} />Mediator
+                                                                                            <input type='radio' name={`technologyRadio${index}`} value='10' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 10)} checked />Expert
+                                                                                        </div>
+                                                                                    )}
+                                                                            </Field>
+                                                                        }
+
+                                                                    </div>
 
                                                                 }
-                                                                console.log("aaaa", a);
-                                                                 a.map((aa) => 
-                                                                       
-                                                                        aa === technology.option_key ?   <div> <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' />{technology.option_key} </div>
-                                                                         : <p>false</p>
-                                                                        // <div> <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' />{technology.option_key} </div>
-                                                                    )
-
-
-
-
-
-
 
                                                             }
-
-
-
-
-                                                            <div>
-                                                                {/* {
-
-                                                                    tech.technologyName === technology.option_key ?
-                                                                        <div><Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' checked />
-
-                                                                            {technology.option_key} </div> : null
-                                                                } */}
-
-                                                                {
-
-                                                                    tech.technologyName === technology.option_key && tech.rating === 3 ?
-
-                                                                        <div><Field name={`technologies.${index}.rating`}>
-                                                                            {
-                                                                                ({ Field, meta, form }) => (
-                                                                                    <div>
-
-
-                                                                                        <input type='radio' name={`technologyRadio${index}`} value='3' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 3)} checked />Begginer
-                                                                                        <input type='radio' name={`technologyRadio${index}`} value='6' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 6)} />Mediator
-                                                                                        <input type='radio' name={`technologyRadio${index}`} value='10' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 10)} />Expert
-
-                                                                                    </div>
-
-                                                                                )
-                                                                            }
-
-                                                                        </Field></div>
-                                                                        : null
-
-
-
-
-                                                                }
-
-
-                                                                {
-                                                                    tech.technologyName === technology.option_key && tech.rating === 6 ?
-
-                                                                        <div><Field name={`technologies.${index}.rating`}>
-                                                                            {
-                                                                                ({ Field, meta, form }) => (
-                                                                                    <div>
-
-
-                                                                                        <input type='radio' name={`technologyRadio${index}`} value='3' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 3)} />Begginer
-                                                                                        <input type='radio' name={`technologyRadio${index}`} value='6' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 6)} checked />Mediator
-                                                                                        <input type='radio' name={`technologyRadio${index}`} value='10' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 10)} />Expert
-
-                                                                                    </div>
-
-                                                                                )
-                                                                            }
-
-                                                                        </Field></div>
-                                                                        : null
-                                                                }
-
-
-
-                                                                {
-                                                                    tech.technologyName === technology.option_key && tech.rating === 10 ?
-
-                                                                        <div><Field name={`technologies.${index}.rating`}>
-                                                                            {
-                                                                                ({ Field, meta, form }) => (
-                                                                                    <div>
-
-
-                                                                                        <input type='radio' name={`technologyRadio${index}`} value='3' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 3)} />Begginer
-                                                                                        <input type='radio' name={`technologyRadio${index}`} value='6' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 6)} />Mediator
-                                                                                        <input type='radio' name={`technologyRadio${index}`} value='10' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 10)} checked />Expert
-
-                                                                                    </div>
-
-                                                                                )
-                                                                            }
-
-                                                                        </Field></div>
-                                                                        : null
-
-                                                                }
-
-
-                                                            </div>
-
 
                                                         }
                                                         )
 
 
+                                                    }
+                                                    {
 
+                                                        a.includes(technology.option_key) ? null : <div><Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' />{technology.option_key}
+                                                            <Field name={`technologies.${index}.rating`}>
+                                                                {({ Field, meta, form }) => (
+                                                                    <div>
+                                                                        <input type='radio' name={`technologyRadio${index}`} value='3' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 3)} />Begginer
+                                                                        <input type='radio' name={`technologyRadio${index}`} value='6' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 6)} />Mediator
+                                                                        <input type='radio' name={`technologyRadio${index}`} value='10' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 10)} />Expert
 
-
+                                                                    </div>
+                                                                )}
+                                                            </Field>
+                                                        </div>
 
                                                     }
 
-                                                    {/* <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' />{technology.option_key} */}
-
-
-                                                    {/* <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' />{technology.option_key} */}
-
-
-                                                    {/* <Field name={`technologies.${index}.rating`}>
-                                                        {
-                                                            ({ Field, meta, form }) => (
-                                                                <div>
-
-
-                                                                    <input type='radio' name={`technologyRadio${index}`} value='3' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 3)} />Begginer
-                                                                    <input type='radio' name={`technologyRadio${index}`} value='6' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 6)} />Mediator
-                                                                    <input type='radio' name={`technologyRadio${index}`} value='10' {...Field} onClick={() => setFieldValue(`technologies.${index}.rating`, 10)} />Expert
-
-                                                                </div>
-
-                                                            )
-                                                        }
-
-                                                    </Field> */}
                                                 </div>
-                                            ))
+                                            })
                                         }
                                     </div>
                                 )
