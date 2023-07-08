@@ -12,7 +12,7 @@ import axios from 'axios'
 
 import { useState } from 'react'
 
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 
 
@@ -49,7 +49,7 @@ function LoginForm() {
             axiosIntance.defaults.headers['Authorization'] = 'JWT ' + res.data.access
             localStorage.setItem("access_token", res.data.access)
             localStorage.setItem("refresh_token", res.data.refresh)
-            console.log('local storage values:  access token', localStorage.getItem("access_token"), "refresh token : ", localStorage.getItem("refresh_token"))
+           
             navigate("/input-form/")
 
         } catch (error) {
@@ -84,6 +84,7 @@ function LoginForm() {
 
                 </Form>
             </Formik>
+            <p>Don't have an account ? <Link to="/register/">Register</Link></p>
 
         </div>
     )

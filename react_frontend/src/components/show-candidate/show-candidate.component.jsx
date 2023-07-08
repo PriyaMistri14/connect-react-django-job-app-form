@@ -22,18 +22,10 @@ function ShowCandidate() {
         navigate("/login/")
     }
 
-    // const updateCandidate = async (candidate) => {
-    //     alert(candidate.id)
-    //     navigate(`/update-form/${candidate}`)
-
-
-
-    // }
-
-
 
 
     const deleteCandidate = async (candidate) => {
+        if(window.confirm("Are you sure to delete this record ??")){
         const candidate_id = candidate.id
         const academics = candidate.academics
         const experiences = candidate.experiences
@@ -44,51 +36,52 @@ function ShowCandidate() {
 
         try {
 
-            //    const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/candidate/${candidate_id}/`)
+               const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/candidate/${candidate_id}/`)
 
             academics.map(async (academic) => {
                 const academic_id = academic.id
                 console.log("academic id", academic_id)
-                // const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/academic/${academic_id}/`)
+                const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/academic/${academic_id}/`)
             })
 
 
             experiences.map(async (experience) => {
                 const experience_id = experience.id
                 console.log("experience id", experience_id)
-                // const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/experience/${experience_id}/`)
+                const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/experience/${experience_id}/`)
             })
 
             languages.map(async (language) => {
                 const language_id = language.id
                 console.log("language id", language_id)
-                // const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/language/${language_id}/`)
+                const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/language/${language_id}/`)
             })
 
 
             technologies.map(async (technology) => {
                 const technology_id = technology.id
                 console.log("technology id", technology_id)
-                // const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/technology/${technology_id}/`)
+                const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/technology/${technology_id}/`)
             })
 
 
             references.map(async (reference) => {
                 const reference_id = reference.id
                 console.log("reference id", reference_id)
-                // const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/reference/${reference_id}/`)
+                const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/reference/${reference_id}/`)
             })
 
             preferences.map(async (preference) => {
                 const preference_id = preference.id
                 console.log("preference id", preference_id)
-                // const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/preference/${preference_id}/`)
+                const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/preference/${preference_id}/`)
             })
-            alert("Successfully Deleted")
+            alert("SUCCESSFULLY DELETED !!!!!!")
 
         } catch (error) {
             console.log("Error while deleting !!", error);
         }
+    }
 
     }
 
@@ -120,12 +113,10 @@ function ShowCandidate() {
         <div>
             {
                 candidates.map((candidate) => (
-                    <div><ShowData candidate={candidate} /><br /><br />
+                    <div key={candidate.id}><ShowData candidate={candidate} /><br /><br />
                         <a href='/show-candidate/' onClick={() => deleteCandidate(candidate)}>Delete </a>
                         <br /><br />
-                        <Link to={`/update/${candidate.id}`} >Update link</Link>
-                     
-                        {/* <a onClick={() => updateCandidate(candidate)}>Update </a> */}
+                        <Link to={`/update/${candidate.id}`} >Update</Link>                 
                         <br /><br />
 
                     </div>

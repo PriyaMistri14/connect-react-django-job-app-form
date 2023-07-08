@@ -3,52 +3,24 @@ import './App.css';
 
 import InputForm from './components/input-form/input-form.component';
 
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
-import axios from 'axios';
 
 import axiosIntance from './axiosApi';
 
 import LoginForm from './components/login-from/login-form.component';
 import RegistrationForm from './components/registration-form/registration-form.component';
 import ShowCandidate from './components/show-candidate/show-candidate.component';
+import HomePage from './components/home-page/home-page.component';
 
 
 import { Routes, Route, Link } from "react-router-dom";
 
 import { useNavigate } from 'react-router-dom';
-import UpdateForm from './components/update-form/update-form.component';
+
 import Update from './components/update/update.component';
 
-
-
-
-
-
 function App() {
-  // const [candidate, setCandidate] = useState([])
-
-  // useEffect(()=>{
-
-  //   (async ()=>{
-  //     try{
-  //       // const candidates = await axios.get("http://127.0.0.1:8000/job/candidate/")
-  //       // axios.defaults.headers['Authorization'] ='JWT ' + localStorage.getItem("access_token")
-  //       const candidates = await axiosIntance.get("http://127.0.0.1:8000/job/candidate/")
-  //       // axios.defaults.headers['Authorization'] ='JWT ' + localStorage.getItem("access_token")
-
-  //       console.log(candidates)
-  //       setCandidate(candidates)
-
-  //     }catch(error){
-  //       console.log(error)
-
-  //     }
-  //   }
-
-  //   )()
-
-  // },[])
 
   const navigate = useNavigate()
 
@@ -66,7 +38,7 @@ function App() {
       console.log("Error while blacklisting tthe token :::::", error)
     }
 
-    console.log("Before log out value of token ::", axiosIntance.defaults.headers["Authorization"])
+
     axiosIntance.defaults.headers["Authorization"] = null
     localStorage.removeItem("access_token")
     localStorage.removeItem("refresh_token")
@@ -87,15 +59,10 @@ function App() {
           && <span onClick={logoutHandler}>Log Out</span> || <Link to="/login/" className='nav-link'>Login</Link>
 
 
-          // localStorage.getItem("access_token") === null && axiosIntance.defaults.headers['Authorization'] === null ? 
-
-          //  <Link to="/login/" className='nav-link'>Login</Link>
-          //  :  <span  onClick={logoutHandler}>Log Out</span>   
-
 
 
         }
-        {/* <Link to="/login/" className='nav-link'>Login</Link> */}
+
         <Link to="/register/" className='nav-link' >Register</Link>
         <Link to="/input-form/" className='nav-link' >Input Form</Link>
         <Link to="/show-candidate/" className='nav-link' >Show Candidate</Link>
@@ -103,13 +70,13 @@ function App() {
       </nav>
 
       <Routes >
+        <Route path="/" element={<HomePage />} />
         <Route path="/login/" element={<LoginForm />} />
         <Route path="/register/" element={<RegistrationForm />} />
         <Route path="/input-form/" element={<InputForm />} />
         <Route path="/show-candidate/" element={<ShowCandidate />} />
-        {/* <Route path="/update-form/:candidate" element={<UpdateForm />} /> */}
-        <Route path="/update/:candidate" element={<Update />} />
-      
+        <Route path="/update/:candidate_id" element={<Update />} />
+
       </Routes>
 
 

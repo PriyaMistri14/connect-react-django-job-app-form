@@ -5,65 +5,10 @@ import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik'
 
 import * as Yup from "yup"
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import axiosIntance from '../../axiosApi'
 
-import { useEffect } from 'react'
-
-
-const getCity = async(state) => {
-    console.log("called with state", state);
-    var cities = []
-
-    try {
-        const citiessss = await axiosIntance.post("http://127.0.0.1:8000/job/getCities/",{
-            state: state
-        })
-        console.log("cities in front end::", citiessss.data.fetched_cities)
-        cities = citiessss.data.fetched_cities
-
-
-
-    } catch (error) {
-        console.log("Error while fetching cities in front end", error)
-
-    }
-    // var cities = []
-    // switch (state) {
-    //     case "Gujarat":
-    //         cities = ['ahmedabad', 'surat',
-    //             "rajkot"]
-    //         break
-
-
-    //     case "Punjab":
-    //         cities = ["amritsar", "abc"]
-    //         break
-    //     default:
-    //         cities = []
-    // }
-
-    return cities
-
-}
-
-
-
-
-
-
-
-
-let dateToTmp;
-let fromDate;
-// const allLanguages = ['Hindi', 'Gujrati', 'English']
-// const allTechnologies = ['PHP', 'Mysql', 'Laravel', 'Oracle']
-// const allDepartments = ['Development', 'Design', 'Testing', 'HR']
-// const allPreferLocations = ['Ahmedabad', 'Surat', 'Rajkot']
-// const allCourses = ['SSC', 'HSC', 'BECHELOR', 'MASTER']
-
-
-
+import { useNavigate } from 'react-router-dom'
 
 
 const course = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/1/")
@@ -74,23 +19,17 @@ const language = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/2/
 console.log("allLanguages", language.data.options)
 const allLanguages = language.data.options
 
-
 const technology = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/3/")
 console.log("allTechnology", technology.data.options)
 const allTechnologies = technology.data.options
-
-
 
 const prefer_location = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/4/")
 console.log("allPreferLocation", prefer_location.data.options)
 const allPreferLocations = prefer_location.data.options
 
-
-
 const department = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/5/")
 console.log("allDepartment", department.data.options)
 const allDepartments = department.data.options
-
 
 const state = await axiosIntance.get("http://127.0.0.1:8000/job/state/")
 console.log("allState", state.data)
@@ -101,21 +40,37 @@ const allStates = state.data
 
 const InputForm = () => {
 
-    // useEffect(()=>{
+    let dateOfBirth;
 
-    //     (async ()=>{
-    //         const course = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/1/")
-    //         console.log("Courses", course.data.options)
-    //         allCourses = course.data.options
-    //         console.log("allcourses::", allCourses)
-    //     }
+    const navigate = useNavigate()
 
-    //     )()
+    useEffect(() => {
+        if (!(localStorage.getItem("access_token") && axiosIntance.defaults.headers['Authorization'])) {
+            navigate("/login/")
 
-
-    // },[])
+        }
+    }, [])
 
 
+    const getCity = async (state) => {
+   
+        var cities = []
+
+        try {
+            const city = await axiosIntance.post("http://127.0.0.1:8000/job/getCities/", {
+                state: state
+            })
+
+            cities = city.data.fetched_cities
+
+
+        } catch (error) {
+            console.log("Error while fetching cities in front end", error)
+        }
+
+        return cities
+
+    }
 
     return (
         <div>
@@ -200,12 +155,12 @@ const InputForm = () => {
 
             }}
 
-                // onSubmit={values => console.log(values)}
+
                 onSubmit={async (values) => {
-                    alert("Successfull!!")
+
                     console.log("Form data : ", values)
                     try {
-                        // uncomment this
+
                         const resCand = await axiosIntance.post("http://127.0.0.1:8000/job/candidate/", {
                             fname: values.fname,
                             lname: values.lname,
@@ -219,7 +174,7 @@ const InputForm = () => {
                         })
                         console.log("Response candidate created:", resCand)
 
-                        // uncommint this
+
                         if (values.academics.length != 0) {
                             const res = values.academics.map(async (academic) => {
 
@@ -228,14 +183,14 @@ const InputForm = () => {
                                     name_of_board_university: academic.nameOfBoardUniversity,
                                     passing_year: academic.passingYear,
                                     percentage: academic.percentage,
-                                       candidate: resCand.data.id  // uncomment this
-                                    // candidate: 13
+                                    candidate: resCand.data.id
+
                                 })
 
                                 console.log("Response academic created:", resAcademics)
                             })
 
-                            console.log("Main response academics", res)
+
                         }
 
 
@@ -247,14 +202,13 @@ const InputForm = () => {
                                     designation: experience.designation,
                                     from_date: experience.from,
                                     to_date: experience.to,
-                                       candidate: resCand.data.id  // uncomment this
-                                    // candidate: 13
+                                    candidate: resCand.data.id
                                 })
 
                                 console.log("Response experience created:", resExperience)
                             })
 
-                            console.log("Main response experience", res)
+
                         }
 
 
@@ -263,67 +217,61 @@ const InputForm = () => {
 
                         if (values.languages.length != 0) {
                             const res = values.languages.map(async (language) => {
-                                if(language != undefined && language.languageName.length != 0){ 
+                                if (language != undefined && language.languageName.length != 0) {
 
-                                const resLanguage = await axiosIntance.post("http://127.0.0.1:8000/job/language/", {
-                                    language: language.languageName[0],
-                                    read: language.read,
-                                    write: language.write,
-                                    speak: language.speak,
-                                       candidate: resCand.data.id  // uncomment this
-                                    // candidate: 13
-                                })
-                                console.log("Response language created:", resLanguage)
-                            }
+                                    const resLanguage = await axiosIntance.post("http://127.0.0.1:8000/job/language/", {
+                                        language: language.languageName[0],
+                                        read: language.read,
+                                        write: language.write,
+                                        speak: language.speak,
+                                        candidate: resCand.data.id
+                                    })
+                                    console.log("Response language created:", resLanguage)
+                                }
 
                             })
 
-                            console.log("Main response language", res)
+
                         }
 
 
 
                         if (values.technologies.length != 0) {
                             const res = values.technologies.map(async (technology) => {
-                                if(technology != undefined && technology.technologyName.length != 0 ){ 
+                                if (technology != undefined && technology.technologyName.length != 0) {
 
-                                const resTechnology = await axiosIntance.post("http://127.0.0.1:8000/job/technology/", {
-                                    technology: technology.technologyName[0],
-                                    ranting: technology.rating,                                    
-                                       candidate: resCand.data.id  // uncomment this
-                                    // candidate: 13
-                                })
-                                console.log("Response technology created:", resTechnology)
-                            }
+                                    const resTechnology = await axiosIntance.post("http://127.0.0.1:8000/job/technology/", {
+                                        technology: technology.technologyName[0],
+                                        ranting: technology.rating,
+                                        candidate: resCand.data.id
+                                    })
+                                    console.log("Response technology created:", resTechnology)
+                                }
 
                             })
 
-                            console.log("Main response technology", res)
+
                         }
 
 
 
 
                         if (values.references.length != 0) {
-                            const res = values.references.map(async (reference) => {                               
+                            const res = values.references.map(async (reference) => {
 
                                 const resReference = await axiosIntance.post("http://127.0.0.1:8000/job/reference/", {
                                     refe_name: reference.name,
                                     refe_contact_no: reference.contactNo,
-                                    refe_relation : reference.relation,
-                                       candidate: resCand.data.id  // uncomment this
-                                    // candidate: 13
+                                    refe_relation: reference.relation,
+                                    candidate: resCand.data.id
                                 })
                                 console.log("Response relation created:", resReference)
 
 
                             })
 
-                            console.log("Main response relation ", res)
+
                         }
-
-
-
 
 
                         if (values.demoLocation.length != 0) {
@@ -335,15 +283,14 @@ const InputForm = () => {
                                     expected_ctc: values.expectedCTC,
                                     current_ctc: values.currentCTC,
                                     department: values.department,
-                                       candidate: resCand.data.id  // uncomment this
-                                    // candidate: 13
+                                    candidate: resCand.data.id
                                 })
                                 console.log("Response preferences created:", resPreference)
 
 
                             })
 
-                            console.log("Main response  preferences ", res)
+
                         }
 
 
@@ -393,8 +340,8 @@ const InputForm = () => {
 
                     dob: Yup.date().required("this field is required!!!")
                         .max('2005-01-01', "your age must be 18 or greater!!")
-                        .test('dateToTmp', 'assign value to variable', (value) => {
-                            dateToTmp = value;
+                        .test('dateOfBirth', 'assign value to variable', (value) => {
+                            dateOfBirth = value;
                             return true;
                         }),
 
@@ -418,8 +365,8 @@ const InputForm = () => {
 
                                 .test('passingYear', 'passing year is greater then dob!!', (value, ctx) => {
                                     const pYear = value
-                                    const dob = new Date(dateToTmp).getFullYear()
-                                    console.log("passsing year curr", pYear, "dob", dob, "date to tmp", dateToTmp);
+                                    const dob = new Date(dateOfBirth).getFullYear()
+                                    console.log("passsing year curr", pYear, "dob", dob, "date to tmp", dateOfBirth);
                                     return pYear > dob
                                 }),
 
@@ -442,20 +389,22 @@ const InputForm = () => {
                         from: Yup.date().required("this field is required!!")
                             .max(new Date(), "Not possible")
                             .test('from', 'from date must be greater then dob!!', (value) => {
-                                fromDate = value
-                                const dob = dateToTmp
-                                console.log("from date", fromDate, "dob", dob);
-                                return fromDate > dob
+                              
+                                const dob = dateOfBirth
+                                console.log("from date", value, "dob", dob);
+                                return value > dob
                             }),
 
                         to: Yup.date().required("this field is required!!")
-                            .max(new Date(), "Not possible!!!")
-                            .test('to', 'To date must be greater than from date!!', (value) => {
-                                const to = value
-                                const from = fromDate
-                                return to > from
+                            .max(new Date(), "Not possible!!!").min(Yup.ref('from'),"To date must be greater than from date!!")
+                            // .test('to', 'To date must be greater than from date!!', (value) => {
+                            //     console.log("TO DATE:::::::::::::::", value,"FROM DATE::::::::::::::::::", fromDate);
+                            //     const to = value
+                            //     const from = fromDate
+                                
+                            //     return to > from
 
-                            })
+                            // })
 
 
                     })),
@@ -494,21 +443,36 @@ const InputForm = () => {
                     demoLocation: Yup.array().test('demolocation', "this field is required  !!!", (value) => {
 
                         return value.length > 0
-                    })
+                    }),
 
 
 
 
 
-                    // languages: Yup.array().of(Yup.object().shape({
+                    languages: Yup.array().test('languages',"Select atleast one language!!",(value) => {
+var i 
+                        console.log( value.languageName.length =! 0)
+                       value.map((value)=>{
+                        console.log(value);
+                    i =  value.languageName.length == 0
+                
+                }
+                
+                )
+                return i
+                        // if(value && value.length > 0 ){
+                         
+                        //     console.log("valueeeeeeeeeeeeeeeeeeeeeee", value[0].languageName);
+                        //     return value[0].languageName !== undefined && value[0].languageName.length > 0
+                          
+                        //     // console.log("valueeeeeeeeeeeeeeeeeeeeeee", value[0].languageName);
+                        //     // return value[0].languageName !== undefined && value[0].languageName.length > 0
 
-                    //     languageName: Yup.string(),
-                    //     read: Yup.string(),
-                    //     write: Yup.string(),
-                    //     speak: Yup.string(),
+                        // }
+                        
+                    }
 
-
-                    // }))
+                    ),
 
 
 
@@ -527,7 +491,7 @@ const InputForm = () => {
 
                 {(props) => {
 
-                    console.log("props of formik", props);
+                    
                     const { values, setFieldValue } = props
 
                     return (<Form ><br /><br />
@@ -556,7 +520,7 @@ const InputForm = () => {
                         <br /><br />
                         <ErrorMessage name="gender" /><br /><br />
 
-                        State : <Field as="select" name="state" onClick={async(e) => {
+                        State : <Field as="select" name="state" onClick={async (e) => {
                             console.log("called");
                             const state = e.target.value
                             const cities = await getCity(state)
@@ -570,8 +534,7 @@ const InputForm = () => {
                                 allStates.map((state) => <option value={state.name} >{state.name}</option>)
 
                             }
-                            {/* <option value="gujrat">Gujrat</option> */}
-                            {/* <option value="punjab">Punjab</option> */}
+
                         </Field><br /><br />
                         <ErrorMessage name="state" /><br /><br />
 
@@ -629,8 +592,7 @@ const InputForm = () => {
                                                     </Field><br /><br />
                                                     <ErrorMessage name={`academics.${index}.courseName`} /><br /><br />
 
-
-                                                    Name of board or university : <Field type="text" name={`academics.${index}.nameOfBoardUniversity`} id={`academics.${index}.nameOfBoardUniversity`} /><br /><br />
+                                                    when     Name of board or university : <Field type="text" name={`academics.${index}.nameOfBoardUniversity`} id={`academics.${index}.nameOfBoardUniversity`} /><br /><br />
 
                                                     <ErrorMessage name={`academics.${index}.nameOfBoardUniversity`} /><br /><br />
 
@@ -714,11 +676,13 @@ const InputForm = () => {
                                                 <Field name={`languages.${index}.read`} id={`languages.${index}.read`} type='checkbox' />Read
                                                 <Field name={`languages.${index}.write`} id={`languages.${index}.write`} type='checkbox' />Write
                                                 <Field name={`languages.${index}.speak`} id={`languages.${index}.speak`} type='checkbox' />Speak
+                                                
 
                                                 <br /><br /></div>
                                         ))
 
                                     }
+                                    <ErrorMessage name='languages'/>
 
                                     </div>
                                 )
@@ -839,7 +803,7 @@ const InputForm = () => {
 
 
                         Prefer Location : <Field as='select' name='demoLocation' multiple >
-                            {/* <option selected hidden >Select location</option> */}
+
 
                             {
                                 allPreferLocations.map((preferLocation) => (

@@ -8,7 +8,14 @@ import * as Yup from 'yup'
 
 import axiosIntance from '../../axiosApi'
 
+import { useNavigate } from 'react-router-dom'
+
+import { Link } from 'react-router-dom'
+
 const RegistrationForm = () => {
+
+  const navigate = useNavigate()
+
  const initialValues = {
     username:"",
     email:"",
@@ -38,12 +45,13 @@ try{
   })
 
   console.log("register response :" , res)
+  navigate("/login/")
 
 }catch(error){
   console.log("Error", error.response.data.username)
   if(error.response.data.username == "A user with that username already exists.")
   {
-    // alert("User already exists !!!")
+   
     form.setFieldError("username","User name already exists!!")
   }
 }
@@ -69,13 +77,11 @@ try{
 
         <button type='submit'>Register</button><br /><br />
 
-
-
         </Form>
 
-
-
       </Formik>
+
+      <p>Already have an account ? <Link to="/login/">Login</Link></p>
       
     </div>
   )

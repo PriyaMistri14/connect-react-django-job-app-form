@@ -5,7 +5,7 @@ import React from 'react'
 const ShowData = (props) => {
   const { candidate } = props
   return (
-    <div><hr />
+    <div key={candidate.id}><hr />
       First Name : {candidate.fname} <br />
       Last Name : {candidate.lname}<br />
       Surname : {candidate.surname}<br />
