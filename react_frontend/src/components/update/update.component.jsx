@@ -936,6 +936,48 @@ const Update = () => {
                     demoLocation: Yup.array().test('demolocation', "this field is required  !!!", (value) => {
 
                         return value.length > 0
+                    }),
+
+
+
+
+
+
+                    languages: Yup.array().test('languages', "Select atleast one language!!", (value) => {
+                    
+                        var arr = []                     
+                        for (var i = 0; i < value.length; i++) {
+                            if (value[i].languageName != undefined && value[i].languageName.length !== 0) {
+                                arr.push(true)
+                                break
+
+                            }
+                            else{
+                                arr.push(false)
+                            }
+
+                        }
+                        return arr.includes(true)
+                       
+                    }),
+
+
+                    technologies: Yup.array().test('technologies', "Select atleast one technology!!", (value) => {
+                 
+                        var arr = []                     
+                        for (var i = 0; i < value.length; i++) {
+                            if (value[i].technologyName != undefined && value[i].technologyName.length !== 0) {
+                                arr.push(true)
+                                break
+
+                            }
+                            else{
+                                arr.push(false)
+                            }
+
+                        }
+                        return arr.includes(true)
+                       
                     })
 
 
@@ -1116,7 +1158,21 @@ const Update = () => {
 
                                              <div>                                               
 
-                                                <Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} />{language.option_key}
+                                                <Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} 
+                                                onClick={
+                                                    v => {
+                                                        console.log("checkbox  value of  language", v, v.target.checked)
+                                                        if(!v.target.checked){
+                                                            console.log("TRUE");
+                                                           
+                                                            setFieldValue(`languages.${index}.read` , false)
+                                                             setFieldValue(`languages.${index}.write` , false) 
+                                                             setFieldValue(`languages.${index}.speak` , false) 
+
+                                                        }  
+                                                        
+                                                    }}
+                                                    />{language.option_key}
                                                 <Field name={`languages.${index}.read`} id={`languages.${index}.read`} type='checkbox' />Read
                                                 <Field name={`languages.${index}.write`} id={`languages.${index}.write`} type='checkbox' />Write
                                                 <Field name={`languages.${index}.speak`} id={`languages.${index}.speak`} type='checkbox' />Speak
@@ -1127,6 +1183,7 @@ const Update = () => {
                                         ))
 
                                     }
+                                    <ErrorMessage  name= "languages"/>
 
                                     </div>
                                 )
@@ -1145,7 +1202,16 @@ const Update = () => {
                                             allTechnologies.map((technology, index) => (
                                                 <div>
 
-                                                    <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' />{technology.option_key}
+                                                    <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' 
+                                                     onClick={
+                                                        v => {
+                                                            console.log("checkbox  value of  technology", v, v.target.checked)
+                                                            if(!v.target.checked){
+                                                                setFieldValue(`technologies.${index}.rating` , false)
+                                                            }  
+                                                            
+                                                        }}
+                                                    />{technology.option_key}
                                                     <Field type='radio' name={`technologies.${index}.rating`} value='3' />Begginer
                                                     <Field type='radio' name={`technologies.${index}.rating`} value='6' />Mediator
                                                     <Field type='radio' name={`technologies.${index}.rating`} value='10' />Expert
@@ -1154,6 +1220,7 @@ const Update = () => {
                                                 </div>
                                             ))
                                         }
+                                        <ErrorMessage name="technologies"/>
                                     </div>
                                 )
                             }

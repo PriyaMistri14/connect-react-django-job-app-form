@@ -53,7 +53,7 @@ const InputForm = () => {
 
 
     const getCity = async (state) => {
-   
+
         var cities = []
 
         try {
@@ -389,22 +389,22 @@ const InputForm = () => {
                         from: Yup.date().required("this field is required!!")
                             .max(new Date(), "Not possible")
                             .test('from', 'from date must be greater then dob!!', (value) => {
-                              
+
                                 const dob = dateOfBirth
                                 console.log("from date", value, "dob", dob);
                                 return value > dob
                             }),
 
                         to: Yup.date().required("this field is required!!")
-                            .max(new Date(), "Not possible!!!").min(Yup.ref('from'),"To date must be greater than from date!!")
-                            // .test('to', 'To date must be greater than from date!!', (value) => {
-                            //     console.log("TO DATE:::::::::::::::", value,"FROM DATE::::::::::::::::::", fromDate);
-                            //     const to = value
-                            //     const from = fromDate
-                                
-                            //     return to > from
+                            .max(new Date(), "Not possible!!!").min(Yup.ref('from'), "To date must be greater than from date!!")
+                        // .test('to', 'To date must be greater than from date!!', (value) => {
+                        //     console.log("TO DATE:::::::::::::::", value,"FROM DATE::::::::::::::::::", fromDate);
+                        //     const to = value
+                        //     const from = fromDate
 
-                            // })
+                        //     return to > from
+
+                        // })
 
 
                     })),
@@ -447,36 +447,42 @@ const InputForm = () => {
 
 
 
+                    languages: Yup.array().test('languages', "Select atleast one language!!", (value) => {
+
+                        var arr = []
+                        for (var i = 0; i < value.length; i++) {
+                            if (value[i].languageName != undefined && value[i].languageName.length !== 0) {
+                                arr.push(true)
+                                break
+
+                            }
+                            else {
+                                arr.push(false)
+                            }
+
+                        }
+                        return arr.includes(true)
+
+                    }),
 
 
-                    languages: Yup.array().test('languages',"Select atleast one language!!",(value) => {
-var i 
-                        console.log( value.languageName.length =! 0)
-                       value.map((value)=>{
-                        console.log(value);
-                    i =  value.languageName.length == 0
-                
-                }
-                
-                )
-                return i
-                        // if(value && value.length > 0 ){
-                         
-                        //     console.log("valueeeeeeeeeeeeeeeeeeeeeee", value[0].languageName);
-                        //     return value[0].languageName !== undefined && value[0].languageName.length > 0
-                          
-                        //     // console.log("valueeeeeeeeeeeeeeeeeeeeeee", value[0].languageName);
-                        //     // return value[0].languageName !== undefined && value[0].languageName.length > 0
+                    technologies: Yup.array().test('technologies', "Select atleast one technology!!", (value) => {
 
-                        // }
-                        
-                    }
+                        var arr = []
+                        for (var i = 0; i < value.length; i++) {
+                            if (value[i].technologyName != undefined && value[i].technologyName.length !== 0) {
+                                arr.push(true)
+                                break
 
-                    ),
+                            }
+                            else {
+                                arr.push(false)
+                            }
 
+                        }
+                        return arr.includes(true)
 
-
-
+                    })
 
 
                 })
@@ -491,7 +497,7 @@ var i
 
                 {(props) => {
 
-                    
+
                     const { values, setFieldValue } = props
 
                     return (<Form ><br /><br />
@@ -592,7 +598,7 @@ var i
                                                     </Field><br /><br />
                                                     <ErrorMessage name={`academics.${index}.courseName`} /><br /><br />
 
-                                                    when     Name of board or university : <Field type="text" name={`academics.${index}.nameOfBoardUniversity`} id={`academics.${index}.nameOfBoardUniversity`} /><br /><br />
+                                                    Name of board or university : <Field type="text" name={`academics.${index}.nameOfBoardUniversity`} id={`academics.${index}.nameOfBoardUniversity`} /><br /><br />
 
                                                     <ErrorMessage name={`academics.${index}.nameOfBoardUniversity`} /><br /><br />
 
@@ -672,17 +678,29 @@ var i
 
                                         allLanguages.map((language, index) => (
                                             <div>
-                                                <Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} />{language.option_key}
+                                                <Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} onClick={
+                                                    v => {
+                                                        console.log("checkbox  value of  language", v, v.target.checked)
+                                                        if(!v.target.checked){
+                                                            setFieldValue(`languages.${index}.read` , false)
+                                                             setFieldValue(`languages.${index}.write` , false) 
+                                                             setFieldValue(`languages.${index}.speak` , false) 
+
+                                                        }  
+                                                        
+                                                    }}
+                                                />{language.option_key}
                                                 <Field name={`languages.${index}.read`} id={`languages.${index}.read`} type='checkbox' />Read
                                                 <Field name={`languages.${index}.write`} id={`languages.${index}.write`} type='checkbox' />Write
                                                 <Field name={`languages.${index}.speak`} id={`languages.${index}.speak`} type='checkbox' />Speak
-                                                
+                                                <ErrorMessage name={`languages.${index}.languageName`} />
+
 
                                                 <br /><br /></div>
                                         ))
 
                                     }
-                                    <ErrorMessage name='languages'/>
+                                        <ErrorMessage name='languages' />
 
                                     </div>
                                 )
@@ -700,7 +718,20 @@ var i
                                             allTechnologies.map((technology, index) => (
                                                 <div>
 
-                                                    <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' />{technology.option_key}
+                                                    <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' 
+                                                    onClick={
+                                                        v => {
+                                                            console.log("checkbox  value of  technology", v, v.target.checked)
+                                                            if(!v.target.checked){
+                                                                var a= document.getElementsByName(`technologyRadio${index}`)
+                                                                for(var i = 0; i< a.length ; i++){
+                                                                    a[i].checked = false
+                                                                    console.log("uUUUUUU", a[i].checked);
+                                                                }
+                                                                
+                                                            }  
+                                                            
+                                                        }} />{technology.option_key}
 
 
                                                     <Field name={`technologies.${index}.rating`}>
@@ -721,6 +752,7 @@ var i
                                                 </div>
                                             ))
                                         }
+                                        <ErrorMessage name='technologies' />
                                     </div>
                                 )
                             }
