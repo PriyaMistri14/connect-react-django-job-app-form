@@ -75,7 +75,7 @@ const InputForm = () => {
     return (
         <div>
             <Formik initialValues={{
-                fname: "abc",
+                fname: "",
                 lname: "",
                 surname: "",
                 designation: "",
@@ -306,15 +306,15 @@ const InputForm = () => {
                 validationSchema={Yup.object().shape({
                     fname: Yup.string().required("this field is required!!")
                         .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! ")
-                        .max(10, "Maximum characters allowed for this field is 10!!"),
+                        .max(20, "Maximum characters allowed for this field is 20!!"),
 
                     lname: Yup.string().required("this field is required!!")
                         .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! ")
-                        .max(10, "Maximum characters allowed for this field is 10!!"),
+                        .max(20, "Maximum characters allowed for this field is 20!!"),
 
                     surname: Yup.string().required("this field is required!!")
                         .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! ")
-                        .max(10, "Maximum characters allowed for this field is 10!!"),
+                        .max(20, "Maximum characters allowed for this field is 20!!"),
 
                     designation: Yup.string().required("this field is required!!")
                         .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! "),
@@ -324,7 +324,7 @@ const InputForm = () => {
                         .required("this field is required!!"),
 
 
-                    phone: Yup.number().required("this field is required!!")
+                    phone: Yup.number().required("this field is required!!").typeError("Enter number!!!")
                         .integer("phone no does not containes decimals!!")
                         .positive("phone no can not be negative!!")
                         .max(10000000000, "phone no should be of 10 digit!!")
@@ -346,6 +346,7 @@ const InputForm = () => {
                         }),
 
                     zipcode: Yup.number().required("this field is required!!")
+                    .typeError("Enter number!!!")
                         .integer("Please enter integer values!!")
                         .positive("zip code should be positive!!")
                         .min(100000, "zip code is of 6 digits!!")
@@ -359,7 +360,7 @@ const InputForm = () => {
                             nameOfBoardUniversity: Yup.string().required("this field is required!!").matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! "),
 
 
-                            passingYear: Yup.number().required("this field is required!!")
+                            passingYear: Yup.number().required("this field is required!!").typeError("Enter number!!!")
                                 .max(new Date().getFullYear(), "you can not pass in future!!!")
 
 
@@ -370,7 +371,7 @@ const InputForm = () => {
                                     return pYear > dob
                                 }),
 
-                            percentage: Yup.number().required("this field is required!!")
+                            percentage: Yup.number().required("this field is required!!").typeError("Enter number!!!")
                                 .min(0, "Minimum percentage is 0")
                                 .max(100, "maximum percentage is 100")
                         }
@@ -414,7 +415,7 @@ const InputForm = () => {
                         name: Yup.string().required("this field is required!!")
                             .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! "),
 
-                        contactNo: Yup.number().required("this field is required!!")
+                        contactNo: Yup.number().required("this field is required!!").typeError("Enter number!!!")
                             .min(1000000000, "Contact no must be of 10 digits!!")
                             .max(10000000000, "Contact no must be of 10 digits!!"),
 
@@ -423,13 +424,13 @@ const InputForm = () => {
 
                     })),
 
-                    noticePeriod: Yup.number().required("this field is required!!")
+                    noticePeriod: Yup.number().required("this field is required!!").typeError("Enter number!!!")
                         .min(1, "minimum notice period is 1 !!!")
                         .max(10, "maximum notice period is 10 !!"),
 
-                    expectedCTC: Yup.number().required("this field is required!!"),
+                    expectedCTC: Yup.number().required("this field is required!!").typeError("Enter number!!!"),
 
-                    currentCTC: Yup.number().required("this field is required!!"),
+                    currentCTC: Yup.number().required("this field is required!!").typeError("Enter number!!!"),
 
                     department: Yup.string().required("this field is required!!!"),
 
@@ -501,6 +502,7 @@ const InputForm = () => {
                     const { values, setFieldValue } = props
 
                     return (<Form ><br /><br />
+                    <h3>Basic Details</h3>
 
                         First Name:   <Field type="text" name="fname" id="fname" /><br /><br />
                         <ErrorMessage name="fname" /><br /><br />
@@ -577,7 +579,7 @@ const InputForm = () => {
                         <hr /><br /><br />
 
 
-
+                        <h3>Acedamics Details</h3>
                         <FieldArray name='academics' >
                             {
                                 ({ insert, push, remove }) => (
@@ -612,17 +614,23 @@ const InputForm = () => {
                                                     Percentage : <Field type="text" name={`academics.${index}.percentage`} id={`academics.${index}.percentage`} /><br /><br />
                                                     <ErrorMessage name={`academics.${index}.percentage`} /><br /><br />
 
-                                                    {
+                                                    {/* {
                                                         index == 0 ? null : <div><button type='button' onClick={() => remove(index)} >-</button><br /><br /></div>
+                                                    } */}
+
+                                                    {
+                                                        values.academics.length > 1 ? <div><button type='button' onClick={() => remove(index)} >-</button><br /><br /></div> : null
                                                     }
 
 
 
+
+                                                    <button type='button' onClick={() => insert(index+1,{ nameOfBoardUniversity: '', passingYear: '', percentage: '' })}>+</button><br /><br />
                                                 </div>
 
                                             ))
                                         }
-                                        <button type='button' onClick={() => push({ nameOfBoardUniversity: '', passingYear: '', percentage: '' })}>+</button>
+                                        {/* <button type='button' onClick={() => push({ nameOfBoardUniversity: '', passingYear: '', percentage: '' })}>+</button> */}
 
                                         <br /><br />
 
@@ -630,6 +638,7 @@ const InputForm = () => {
                                 )
                             }
                         </FieldArray> <hr /><br /><br />
+                        <h3>Experience Details</h3>
 
 
 
@@ -651,16 +660,24 @@ const InputForm = () => {
 
                                                     To : <Field type='date' name={`experiences.${index}.to`} id={`experiences.${index}.to`} /><br /><br />
                                                     <ErrorMessage name={`experiences.${index}.to`} /><br /><br />
+                                                    {/* {
+                                                        index == 0   ? null : <div><button type='button' onClick={() => remove(index)}>-</button><br /><br /></div>
+
+                                                        
+                                                    } */}
                                                     {
-                                                        index == 0 ? null : <div><button type='button' onClick={() => remove(index)}>-</button><br /><br /></div>
+                                                        values.experiences.length > 1 ? <div><button type='button' onClick={() => remove(index)} >-</button><br /><br /></div> : null
                                                     }
+
+                                                    <button type='button' onClick={() => insert(index+1,{ companyName: "", designation: "", from: "", to: "" })}>+</button><br /><br />
                                                 </div>
+
                                             ))
 
 
                                         }
 
-                                        <button type='button' onClick={() => push({ companyName: "", designation: "", from: "", to: "" })}>+</button><br /><br />
+                                        {/* <button type='button' onClick={() => push({ companyName: "", designation: "", from: "", to: "" })}>+</button><br /><br /> */}
 
                                     </div>
                                 )
@@ -671,6 +688,7 @@ const InputForm = () => {
 
 
                         </FieldArray><hr /><br /><br />
+                        <h4>Language Known</h4>
                         <FieldArray name='languages' >
                             {
                                 () => (
@@ -681,13 +699,13 @@ const InputForm = () => {
                                                 <Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} onClick={
                                                     v => {
                                                         console.log("checkbox  value of  language", v, v.target.checked)
-                                                        if(!v.target.checked){
-                                                            setFieldValue(`languages.${index}.read` , false)
-                                                             setFieldValue(`languages.${index}.write` , false) 
-                                                             setFieldValue(`languages.${index}.speak` , false) 
+                                                        if (!v.target.checked) {
+                                                            setFieldValue(`languages.${index}.read`, false)
+                                                            setFieldValue(`languages.${index}.write`, false)
+                                                            setFieldValue(`languages.${index}.speak`, false)
 
-                                                        }  
-                                                        
+                                                        }
+
                                                     }}
                                                 />{language.option_key}
                                                 <Field name={`languages.${index}.read`} id={`languages.${index}.read`} type='checkbox' />Read
@@ -709,6 +727,7 @@ const InputForm = () => {
                             }
 
                         </FieldArray><hr /><br /><br />
+                        <h3>Technology Known</h3>
 
                         <FieldArray name='technologies'>
                             {
@@ -718,20 +737,20 @@ const InputForm = () => {
                                             allTechnologies.map((technology, index) => (
                                                 <div>
 
-                                                    <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' 
-                                                    onClick={
-                                                        v => {
-                                                            console.log("checkbox  value of  technology", v, v.target.checked)
-                                                            if(!v.target.checked){
-                                                                var a= document.getElementsByName(`technologyRadio${index}`)
-                                                                for(var i = 0; i< a.length ; i++){
-                                                                    a[i].checked = false
-                                                                    console.log("uUUUUUU", a[i].checked);
+                                                    <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox'
+                                                        onClick={
+                                                            v => {
+                                                                console.log("checkbox  value of  technology", v, v.target.checked)
+                                                                if (!v.target.checked) {
+                                                                    var a = document.getElementsByName(`technologyRadio${index}`)
+                                                                    for (var i = 0; i < a.length; i++) {
+                                                                        a[i].checked = false
+                                                                        console.log("uUUUUUU", a[i].checked);
+                                                                    }
+
                                                                 }
-                                                                
-                                                            }  
-                                                            
-                                                        }} />{technology.option_key}
+
+                                                            }} />{technology.option_key}
 
 
                                                     <Field name={`technologies.${index}.rating`}>
@@ -758,6 +777,7 @@ const InputForm = () => {
                             }
 
                         </FieldArray><hr /><br /><br />
+                        <h3>References</h3>
                         <FieldArray name='references'>
                             {
                                 () => (
@@ -788,6 +808,7 @@ const InputForm = () => {
 
 
                         </FieldArray><hr /><br /><br />
+                        <h3>Prefernces</h3>
 
                         Notice Period :  <Field name='noticePeriod' type='text' /><br /><br />
                         <ErrorMessage name='noticePeriod' /><br /><br />

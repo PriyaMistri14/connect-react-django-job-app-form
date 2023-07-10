@@ -11,6 +11,8 @@ from rest_framework.response import Response
 
 
 from django.core.serializers import json # for getcities
+from django.core.paginator import Paginator # for pagination
+from django.http.response import JsonResponse, HttpResponse
 
 
 
@@ -167,5 +169,32 @@ class GetCities(APIView):
 
         except Exception as e:
             return Response({"error":"Error occurs while fetching cities!!"}) 
+
+
+
+def Pagination(request):
+    candidates = CandidateMaster.objects.all().order_by('id').values()
+   
+    page_no = request.GET.get('page')[:-1]
+    data_per_page = int(request.GET.get('data_per_page')) 
+
+    print("..............................page_no and data_per_page............", page_no, data_per_page)
+    p = Paginator(candidates, data_per_page)
+    lst = []
+  
+    try:
+        page_obj = p.get_page(page_no)
+    except: 
+        page_obj = p.page(1) 
+
+    serialize_data = [c for c in page_obj]
+    print("@@@@@@@@@@@@@@@@@@@@serialized data", serialize_data)    
+
+
+
+    # content = {'no_of_pages': p.num_pages, 'data': page_obj}
+
+    # return Response({"paginated_obj", page_obj})   
+    return JsonResponse(serialize_data, safe=False)  
 
 

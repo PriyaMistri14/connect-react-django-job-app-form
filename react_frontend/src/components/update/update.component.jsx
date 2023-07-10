@@ -66,7 +66,7 @@ const Update = () => {
     var dateOfBirth;
 
 
-    const navigate = useNavigate() 
+    const navigate = useNavigate()
 
 
     useEffect(() => {
@@ -237,10 +237,10 @@ const Update = () => {
 
     }
 
-   
+
     console.log("Drop down All", allStates, allCourses, allTechnologies, allLanguages, allDepartments, allPreferLocations)
 
-   console.log("acade::", allData[0], "expe::", allData[1], "lang:;", allData[2], "tech ::", allData[3], "refe::", allData[4], "pref_loc", allData[5], "candidate_all", allData[6], "cities", allData[7])
+    console.log("acade::", allData[0], "expe::", allData[1], "lang:;", allData[2], "tech ::", allData[3], "refe::", allData[4], "pref_loc", allData[5], "candidate_all", allData[6], "cities", allData[7])
 
 
 
@@ -324,11 +324,11 @@ const Update = () => {
     // console.log("PREFERENCES IDDDDD:", pref_ids);
 
 
-//onSubmit
-    const onSubmit = async (values) => {       
+    //onSubmit
+    const onSubmit = async (values) => {
         console.log("Form data : ", values.technologies)
         try {
-           
+
             const resCand = await axiosIntance.put(`http://127.0.0.1:8000/job/candidate/${candidate_id}/`, {
                 fname: values.fname,
                 lname: values.lname,
@@ -346,7 +346,7 @@ const Update = () => {
             //academics
 
             if (values.academics.length != 0) {
-          
+
                 // update 
                 if (values.academics.length === acde_ids.length) {
 
@@ -356,8 +356,8 @@ const Update = () => {
                             name_of_board_university: values.academics[i].nameOfBoardUniversity,
                             passing_year: values.academics[i].passingYear,
                             percentage: values.academics[i].percentage,
-                            candidate: candidate_id 
-                            
+                            candidate: candidate_id
+
                         })
 
                         console.log("Response academic updated:", resAcademics)
@@ -374,8 +374,8 @@ const Update = () => {
                             name_of_board_university: values.academics[i].nameOfBoardUniversity,
                             passing_year: values.academics[i].passingYear,
                             percentage: values.academics[i].percentage,
-                            candidate: candidate_id 
-                            
+                            candidate: candidate_id
+
                         })
 
                         console.log("Response academic updated:", resAcademics)
@@ -389,7 +389,7 @@ const Update = () => {
                             name_of_board_university: values.academics[i].nameOfBoardUniversity,
                             passing_year: values.academics[i].passingYear,
                             percentage: values.academics[i].percentage,
-                            candidate: candidate_id 
+                            candidate: candidate_id
                         })
 
                         console.log("Response academic created:", resAcademics)
@@ -406,7 +406,7 @@ const Update = () => {
                             passing_year: values.academics[i].passingYear,
                             percentage: values.academics[i].percentage,
                             candidate: candidate_id
-                            
+
                         })
 
                         console.log("Response academic updated:", resAcademics)
@@ -426,7 +426,7 @@ const Update = () => {
             // experinces
 
             if (values.experiences.length != 0) {
-            
+
                 if (values.experiences.length === expe_ids.length) {
                     console.log("CAND IDDD AND EXPE IDD IN IF", candidate_id, expe_ids);
                     for (var i = 0; i < values.experiences.length; i++) {
@@ -436,14 +436,14 @@ const Update = () => {
                             from_date: values.experiences[i].from,
                             to_date: values.experiences[i].to,
                             candidate: candidate_id
-                        
+
                         })
 
                         console.log("Response experince updated :", resExpe)
                     }
                 }
 
-        
+
                 else if (values.experiences.length >= expe_ids.length) {
 
                     for (var i = 0; i < expe_ids.length; i++) {
@@ -452,8 +452,8 @@ const Update = () => {
                             designation: values.experiences[i].designation,
                             from_date: values.experiences[i].from,
                             to_date: values.experiences[i].to,
-                            candidate: candidate_id  
-                          
+                            candidate: candidate_id
+
                         })
 
                         console.log("Response experience updated:", resExpe)
@@ -467,8 +467,8 @@ const Update = () => {
                             designation: values.experiences[i].designation,
                             from_date: values.experiences[i].from,
                             to_date: values.experiences[i].to,
-                            candidate: candidate_id 
-                            
+                            candidate: candidate_id
+
                         })
 
                         console.log("Response exxperience created:", resExpe)
@@ -478,7 +478,7 @@ const Update = () => {
 
 
                 }
-          
+
                 else if (values.experiences.length <= expe_ids.length) {
                     for (var i = 0; i < values.experiences.length; i++) {
                         const resExpe = await axiosIntance.put(`http://127.0.0.1:8000/job/experince/${expe_ids[i]}/`, {
@@ -486,7 +486,7 @@ const Update = () => {
                             designation: values.experiences[i].designation,
                             from_date: values.experiences[i].from,
                             to_date: values.experiences[i].to,
-                            candidate: candidate_id  
+                            candidate: candidate_id
                         })
 
                         console.log("Response experience updated :", resExpe)
@@ -509,17 +509,17 @@ const Update = () => {
             if (values.languages.length != 0) {
 
                 if (values.languages.length === lang_ids.length) {
-                 
+
                     for (var i = 0; i < values.languages.length; i++) {
 
-                        if (values.languages[i].languageName.length !== 0) {                           
+                        if (values.languages[i].languageName.length !== 0) {
 
                             const resLang = await axiosIntance.put(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`, {
                                 language: values.languages[i].languageName[0],
                                 read: values.languages[i].read,
                                 write: values.languages[i].write,
                                 speak: values.languages[i].speak,
-                                candidate: candidate_id  
+                                candidate: candidate_id
                             })
 
                             console.log("Response language updated:", resLang)
@@ -535,7 +535,7 @@ const Update = () => {
 
                 }
 
-         
+
 
                 else if (values.languages.length > lang_ids.length) {
 
@@ -548,7 +548,7 @@ const Update = () => {
                                 read: values.languages[i].read,
                                 write: values.languages[i].write,
                                 speak: values.languages[i].speak,
-                                candidate: candidate_id  
+                                candidate: candidate_id
                             })
 
                             console.log("Response language updated:", resLang)
@@ -571,7 +571,7 @@ const Update = () => {
                                 read: values.languages[i].read,
                                 write: values.languages[i].write,
                                 speak: values.languages[i].speak,
-                                candidate: candidate_id   
+                                candidate: candidate_id
                             })
 
                             console.log("Response language created:", resLang)
@@ -579,24 +579,24 @@ const Update = () => {
                         }
                     }
                 }
-              
+
             }
 
 
             // technology    
 
             if (values.technologies.length != 0) {
-                
+
                 if (values.technologies.length === tech_ids.length) {
-                    
+
                     for (var i = 0; i < values.technologies.length; i++) {
 
-                        if (values.technologies[i].technologyName.length !== 0) {                           
+                        if (values.technologies[i].technologyName.length !== 0) {
 
                             const resTech = await axiosIntance.put(`http://127.0.0.1:8000/job/technology/${tech_ids[i]}/`, {
                                 technology: values.technologies[i].technologyName[0],
                                 ranting: values.technologies[i].rating,
-                                candidate: candidate_id  
+                                candidate: candidate_id
                             })
 
                             console.log("Response technology updated:", resTech)
@@ -622,7 +622,7 @@ const Update = () => {
                             const resTech = await axiosIntance.put(`http://127.0.0.1:8000/job/technology/${tech_ids[i]}/`, {
                                 technology: values.technologies[i].technologyName[0],
                                 ranting: values.technologies[i].rating,
-                                candidate: candidate_id  
+                                candidate: candidate_id
                             })
 
                             console.log("Response technology updated:", resTech)
@@ -643,14 +643,14 @@ const Update = () => {
                             const resTech = await axiosIntance.post("http://127.0.0.1:8000/job/technology/", {
                                 technology: values.technologies[i].technologyName[0],
                                 ranting: values.technologies[i].rating,
-                                candidate: candidate_id   
+                                candidate: candidate_id
                             })
 
                             console.log("Response techmology created:", resTech)
 
 
                         }
-                       
+
                     }
                 }
             }
@@ -665,21 +665,21 @@ const Update = () => {
                             refe_name: values.references[i].name,
                             refe_contact_no: values.references[i].contactNo,
                             refe_relation: values.references[i].relation,
-                            candidate: candidate_id  
+                            candidate: candidate_id
                         })
 
                         console.log("Response reference updated:", resRefe)
                     }
                 }
 
-            else if (values.references.length >= refe_ids.length) {
+                else if (values.references.length >= refe_ids.length) {
 
                     for (var i = 0; i < refe_ids.length; i++) {
                         const resRefe = await axiosIntance.put(`http://127.0.0.1:8000/job/reference/${refe_ids[i]}/`, {
                             refe_name: values.references[i].name,
                             refe_contact_no: values.references[i].contactNo,
                             refe_relation: values.references[i].relation,
-                            candidate: candidate_id 
+                            candidate: candidate_id
                         })
 
                         console.log("Response reference updated:", resRefe)
@@ -692,7 +692,7 @@ const Update = () => {
                             refe_name: values.references[i].name,
                             refe_contact_no: values.references[i].contactNo,
                             refe_relation: values.references[i].relation,
-                            candidate: candidate_id   
+                            candidate: candidate_id
                         })
 
                         console.log("Response reference created:", resRefe)
@@ -700,14 +700,14 @@ const Update = () => {
                 }
 
 
-        
+
                 else if (values.references.length <= refe_ids.length) {
                     for (var i = 0; i < values.references.length; i++) {
                         const resRefe = await axiosIntance.put(`http://127.0.0.1:8000/job/reference/${refe_ids[i]}/`, {
                             refe_name: values.references[i].name,
                             refe_contact_no: values.references[i].contactNo,
                             refe_relation: values.references[i].relation,
-                            candidate: candidate_id  
+                            candidate: candidate_id
                         })
 
                         console.log("Response reference updated:", resRefe)
@@ -735,14 +735,14 @@ const Update = () => {
                             expected_ctc: values.expectedCTC,
                             current_ctc: values.currentCTC,
                             department: values.department,
-                            candidate: candidate_id  
+                            candidate: candidate_id
                         })
 
                         console.log("Response preference updated:", resPref)
                     }
                 }
 
-            
+
                 else if (values.demoLocation.length >= pref_ids.length) {
 
                     for (var i = 0; i < pref_ids.length; i++) {
@@ -752,7 +752,7 @@ const Update = () => {
                             expected_ctc: values.expectedCTC,
                             current_ctc: values.currentCTC,
                             department: values.department,
-                            candidate: candidate_id  
+                            candidate: candidate_id
                         })
 
                         console.log("Response preference updated:", resPref)
@@ -767,7 +767,7 @@ const Update = () => {
                             expected_ctc: values.expectedCTC,
                             current_ctc: values.currentCTC,
                             department: values.department,
-                            candidate: candidate_id   
+                            candidate: candidate_id
                         })
 
                         console.log("Response preference created:", resPref)
@@ -784,7 +784,7 @@ const Update = () => {
                             expected_ctc: values.expectedCTC,
                             current_ctc: values.currentCTC,
                             department: values.department,
-                            candidate: candidate_id  
+                            candidate: candidate_id
                         })
 
                         console.log("Response preference updated:", resPref)
@@ -800,9 +800,9 @@ const Update = () => {
                 }
             }
 
-      alert("SUCCESSFULLY UPDATED !!!!!!!!")
-      navigate("/show-candidate/")
-      
+            alert("SUCCESSFULLY UPDATED !!!!!!!!")
+            navigate("/show-candidate/")
+
 
         } catch (error) {
             console.log("Error while updating candidate : ", error)
@@ -822,20 +822,20 @@ const Update = () => {
                 validationSchema={Yup.object().shape({
                     fname: Yup.string().required("this field is required!!")
                         .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! ")
-                        .max(10, "Maximum characters allowed for this field is 10!!"),
+                        .max(20, "Maximum characters allowed for this field is 20!!"),
 
                     lname: Yup.string().required("this field is required!!")
                         .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! ")
-                        .max(10, "Maximum characters allowed for this field is 10!!"),
+                        .max(20, "Maximum characters allowed for this field is 20!!"),
 
                     surname: Yup.string().required("this field is required!!")
                         .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! ")
-                        .max(10, "Maximum characters allowed for this field is 10!!"),
+                        .max(20, "Maximum characters allowed for this field is 20!!"),
 
                     email: Yup.string().email("Please enter a valid email address!!")
                         .required("this field is required!!"),
 
-                    phone: Yup.number().required("this field is required!!")
+                    phone: Yup.number().required("this field is required!!").typeError("Enter number!!!")
                         .integer("phone no does not containes decimals!!")
                         .positive("phone no can not be negative!!")
                         .max(10000000000, "phone no should be of 10 digit!!")
@@ -845,7 +845,7 @@ const Update = () => {
 
                     state: Yup.string().required("this field is required!!!"),
 
-                    city: Yup.string().required("this field is required!!!"),                 
+                    city: Yup.string().required("this field is required!!!"),
 
                     dob: Yup.date().required("this field is required!!!")
                         .max('2005-01-01', "your age must be 18 or greater!!")
@@ -854,7 +854,7 @@ const Update = () => {
                             return true;
                         }),
 
-                 
+
 
                     academics: Yup.array().of(Yup.object().shape(
                         {
@@ -864,7 +864,7 @@ const Update = () => {
                             nameOfBoardUniversity: Yup.string().required("this field is required!!").matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! "),
 
 
-                            passingYear: Yup.number().required("this field is required!!")
+                            passingYear: Yup.number().required("this field is required!!").typeError("Enter number!!!")
                                 .max(new Date().getFullYear(), "you can not pass in future!!!")
 
 
@@ -875,7 +875,7 @@ const Update = () => {
                                     return pYear > dob
                                 }),
 
-                            percentage: Yup.number().required("this field is required!!")
+                            percentage: Yup.number().required("this field is required!!").typeError("Enter number!!!")
                                 .min(0, "Minimum percentage is 0")
                                 .max(100, "maximum percentage is 100")
                         }
@@ -894,7 +894,7 @@ const Update = () => {
                         from: Yup.date().required("this field is required!!")
                             .max(new Date(), "Not possible")
                             .test('from', 'from date must be greater then dob!!', (value) => {
-                                
+
                                 const dob = dateOfBirth
                                 console.log("from date", value, "dob", dob);
                                 return value > dob
@@ -902,7 +902,7 @@ const Update = () => {
 
                         to: Yup.date().required("this field is required!!")
                             .max(new Date(), "Not possible!!!")
-                            .min(Yup.ref('from'),"To date must be greater than from date!!")
+                            .min(Yup.ref('from'), "To date must be greater than from date!!")
 
 
                     })),
@@ -912,7 +912,7 @@ const Update = () => {
                         name: Yup.string().required("this field is required!!")
                             .matches(/^[aA-zZ\s]+$/, "This field should only contains alphabets!! "),
 
-                        contactNo: Yup.number().required("this field is required!!")
+                        contactNo: Yup.number().required("this field is required!!").typeError("Enter number!!!")
                             .min(1000000000, "Contact no must be of 10 digits!!")
                             .max(10000000000, "Contact no must be of 10 digits!!"),
 
@@ -921,13 +921,13 @@ const Update = () => {
 
                     })),
 
-                    noticePeriod: Yup.number().required("this field is required!!")
+                    noticePeriod: Yup.number().required("this field is required!!").typeError("Enter number!!!")
                         .min(1, "minimum notice period is 1 !!!")
                         .max(10, "maximum notice period is 10 !!"),
 
-                    expectedCTC: Yup.number().required("this field is required!!"),
+                    expectedCTC: Yup.number().required("this field is required!!").typeError("Enter number!!!"),
 
-                    currentCTC: Yup.number().required("this field is required!!"),
+                    currentCTC: Yup.number().required("this field is required!!").typeError("Enter number!!!"),
 
                     department: Yup.string().required("this field is required!!!"),
 
@@ -944,40 +944,40 @@ const Update = () => {
 
 
                     languages: Yup.array().test('languages', "Select atleast one language!!", (value) => {
-                    
-                        var arr = []                     
+
+                        var arr = []
                         for (var i = 0; i < value.length; i++) {
                             if (value[i].languageName != undefined && value[i].languageName.length !== 0) {
                                 arr.push(true)
                                 break
 
                             }
-                            else{
+                            else {
                                 arr.push(false)
                             }
 
                         }
                         return arr.includes(true)
-                       
+
                     }),
 
 
                     technologies: Yup.array().test('technologies', "Select atleast one technology!!", (value) => {
-                 
-                        var arr = []                     
+
+                        var arr = []
                         for (var i = 0; i < value.length; i++) {
                             if (value[i].technologyName != undefined && value[i].technologyName.length !== 0) {
                                 arr.push(true)
                                 break
 
                             }
-                            else{
+                            else {
                                 arr.push(false)
                             }
 
                         }
                         return arr.includes(true)
-                       
+
                     })
 
 
@@ -991,12 +991,13 @@ const Update = () => {
 
 
 
-                {(props) => {               
+                {(props) => {
 
-            
+
                     const { values, setFieldValue } = props
 
                     return (<Form ><br /><br />
+                    <h3>Basic Details</h3>
 
                         First Name:   <Field type="text" name="fname" id="fname" /><br /><br />
                         <ErrorMessage name="fname" /><br /><br />
@@ -1006,7 +1007,7 @@ const Update = () => {
 
                         Surname:   <Field type="text" name="surname" id="surname" /><br /><br />
                         <ErrorMessage name="surname" /><br /><br />
-                     
+
 
                         Email :   <Field type="text" name="email" id="email" /><br /><br />
                         <ErrorMessage name="email" /><br /><br />
@@ -1052,8 +1053,10 @@ const Update = () => {
 
 
                         Date of Birth : <Field type="date" name="dob" /><br /><br />
-                        <ErrorMessage name="dob" /><br /><br />
-                       
+                        <ErrorMessage name="dob" /><hr /><br /><br />
+
+                        <h3>Academics Details</h3>
+
 
                         <FieldArray name='academics' >
                             {
@@ -1090,17 +1093,20 @@ const Update = () => {
                                                     Percentage : <Field type="text" name={`academics.${index}.percentage`} id={`academics.${index}.percentage`} /><br /><br />
                                                     <ErrorMessage name={`academics.${index}.percentage`} /><br /><br />
 
+
                                                     {
-                                                        index == 0 ? null : <div><button type='button' onClick={() => remove(index)} >-</button><br /><br /></div>
+                                                        values.academics.length > 1 ? <div><button type='button' onClick={() => remove(index)} >-</button><br /><br /></div> : null
                                                     }
 
 
 
+
+                                                    <button type='button' onClick={() => insert(index + 1, { nameOfBoardUniversity: '', passingYear: '', percentage: '' })}>+</button>
                                                 </div>
 
                                             ))
                                         }
-                                        <button type='button' onClick={() => push({ nameOfBoardUniversity: '', passingYear: '', percentage: '' })}>+</button>
+
 
                                         <br /><br />
 
@@ -1108,6 +1114,8 @@ const Update = () => {
                                 )
                             }
                         </FieldArray> <hr /><br /><br />
+
+                        <h3>Experience Details</h3>
 
 
 
@@ -1129,16 +1137,18 @@ const Update = () => {
 
                                                     To : <Field type='date' name={`experiences.${index}.to`} id={`experiences.${index}.to`} /><br /><br />
                                                     <ErrorMessage name={`experiences.${index}.to`} /><br /><br />
+
                                                     {
-                                                        index == 0 ? null : <div><button type='button' onClick={() => remove(index)}>-</button><br /><br /></div>
+                                                        values.experiences.length > 1 ? <div><button type='button' onClick={() => remove(index)} >-</button><br /><br /></div> : null
                                                     }
+                                                    <button type='button' onClick={() => push({ companyName: "", designation: "", from: "", to: "" })}>+</button><br /><br />
                                                 </div>
                                             ))
 
 
                                         }
 
-                                        <button type='button' onClick={() => push({ companyName: "", designation: "", from: "", to: "" })}>+</button><br /><br />
+
 
                                     </div>
                                 )
@@ -1149,6 +1159,7 @@ const Update = () => {
 
 
                         </FieldArray><hr /><br /><br />
+                        <h3>Language Known</h3>
                         <FieldArray name='languages' >
                             {
                                 () => (
@@ -1156,23 +1167,23 @@ const Update = () => {
 
                                         allLanguages.map((language, index) => (
 
-                                             <div>                                               
+                                            <div>
 
-                                                <Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key} 
-                                                onClick={
-                                                    v => {
-                                                        console.log("checkbox  value of  language", v, v.target.checked)
-                                                        if(!v.target.checked){
-                                                            console.log("TRUE");
-                                                           
-                                                            setFieldValue(`languages.${index}.read` , false)
-                                                             setFieldValue(`languages.${index}.write` , false) 
-                                                             setFieldValue(`languages.${index}.speak` , false) 
+                                                <Field name={`languages.${index}.languageName`} type='checkbox' value={language.option_key}
+                                                    onClick={
+                                                        v => {
+                                                            console.log("checkbox  value of  language", v, v.target.checked)
+                                                            if (!v.target.checked) {
+                                                                console.log("TRUE");
 
-                                                        }  
-                                                        
-                                                    }}
-                                                    />{language.option_key}
+                                                                setFieldValue(`languages.${index}.read`, false)
+                                                                setFieldValue(`languages.${index}.write`, false)
+                                                                setFieldValue(`languages.${index}.speak`, false)
+
+                                                            }
+
+                                                        }}
+                                                />{language.option_key}
                                                 <Field name={`languages.${index}.read`} id={`languages.${index}.read`} type='checkbox' />Read
                                                 <Field name={`languages.${index}.write`} id={`languages.${index}.write`} type='checkbox' />Write
                                                 <Field name={`languages.${index}.speak`} id={`languages.${index}.speak`} type='checkbox' />Speak
@@ -1183,7 +1194,7 @@ const Update = () => {
                                         ))
 
                                     }
-                                    <ErrorMessage  name= "languages"/>
+                                        <ErrorMessage name="languages" />
 
                                     </div>
                                 )
@@ -1192,6 +1203,8 @@ const Update = () => {
                             }
 
                         </FieldArray><hr /><br /><br />
+
+                        <h3>Technology Known</h3>
 
 
                         <FieldArray name='technologies'>
@@ -1202,30 +1215,31 @@ const Update = () => {
                                             allTechnologies.map((technology, index) => (
                                                 <div>
 
-                                                    <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox' 
-                                                     onClick={
-                                                        v => {
-                                                            console.log("checkbox  value of  technology", v, v.target.checked)
-                                                            if(!v.target.checked){
-                                                                setFieldValue(`technologies.${index}.rating` , false)
-                                                            }  
-                                                            
-                                                        }}
+                                                    <Field name={`technologies.${index}.technologyName`} value={technology.option_key} type='checkbox'
+                                                        onClick={
+                                                            v => {
+                                                                console.log("checkbox  value of  technology", v, v.target.checked)
+                                                                if (!v.target.checked) {
+                                                                    setFieldValue(`technologies.${index}.rating`, false)
+                                                                }
+
+                                                            }}
                                                     />{technology.option_key}
                                                     <Field type='radio' name={`technologies.${index}.rating`} value='3' />Begginer
                                                     <Field type='radio' name={`technologies.${index}.rating`} value='6' />Mediator
                                                     <Field type='radio' name={`technologies.${index}.rating`} value='10' />Expert
-                          
-                                                  
+
+
                                                 </div>
                                             ))
                                         }
-                                        <ErrorMessage name="technologies"/>
+                                        <ErrorMessage name="technologies" />
                                     </div>
                                 )
                             }
 
                         </FieldArray><hr /><br /><br />
+                        <h3>References</h3>
 
 
                         <FieldArray name='references'>
@@ -1257,6 +1271,7 @@ const Update = () => {
 
 
                         </FieldArray><hr /><br /><br />
+                        <h3>Preferences</h3>
 
                         Notice Period :  <Field name='noticePeriod' type='text' /><br /><br />
                         <ErrorMessage name='noticePeriod' /><br /><br />
@@ -1281,7 +1296,7 @@ const Update = () => {
 
 
                         Prefer Location : <Field as='select' name='demoLocation' multiple >
-                        
+
 
                             {
                                 allPreferLocations.map((preferLocation) => (

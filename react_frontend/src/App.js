@@ -56,16 +56,16 @@ function App() {
         {
           localStorage.getItem("access_token")
           && axiosIntance.defaults.headers['Authorization']
-          && <span onClick={logoutHandler}>Log Out</span> || <Link to="/login/" className='nav-link'>Login</Link>
+          && <span onClick={logoutHandler}><strong>Log Out</strong></span> || <Link to="/login/" className='nav-link'><strong>Login</strong></Link>
 
 
 
 
         }
 
-        <Link to="/register/" className='nav-link' >Register</Link>
-        <Link to="/input-form/" className='nav-link' >Input Form</Link>
-        <Link to="/show-candidate/" className='nav-link' >Show Candidate</Link>
+        {/* <Link to="/register/" className='nav-link' >Register</Link> */}
+        <Link to="/input-form/" className='nav-link' ><strong>Input Form</strong></Link>
+        <Link to="/show-candidate/" className='nav-link' ><strong>Show Candidate</strong></Link>
 
       </nav>
 

@@ -26,7 +26,8 @@ const RegistrationForm = () => {
  const validationSchema = Yup.object().shape({
   username: Yup.string().required("Required!!"),
   email: Yup.string().email("Invalid email formate!!").required("Required!!"),
-  password: Yup.string().min(8, "Minimum 8 characters are required!!").required("Required!!"),
+  password: Yup.string().min(8, "Minimum 8 characters are required!!").required("Required!!")
+  .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,"Password should contains minimum 8 characters, one Upper case letter , one lower case letter, one number and one special character!!!"),
   password2: Yup.string().oneOf([Yup.ref('password'), ''],"Passwords must match!!").required("Required!!")
 
 })
