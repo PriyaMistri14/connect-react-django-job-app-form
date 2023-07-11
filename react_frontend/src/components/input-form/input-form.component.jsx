@@ -1056,6 +1056,164 @@ const InputForm = () => {
 
     const initialValues = isCreate ? initialValuesForCreate : initialValuesForUpdate
 
+    const validationSchema = Yup.object().shape({
+        fname: Yup.string().required("this field is required!!")
+            .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! ")
+            .max(20, "Maximum characters allowed for this field is 20!!"),
+
+        lname: Yup.string().required("this field is required!!")
+            .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! ")
+            .max(20, "Maximum characters allowed for this field is 20!!"),
+
+        surname: Yup.string().required("this field is required!!")
+            .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! ")
+            .max(20, "Maximum characters allowed for this field is 20!!"),
+
+
+        email: Yup.string().email("Please enter a valid email address!!")
+            .required("this field is required!!"),
+
+
+        phone: Yup.number().required("this field is required!!").typeError("Enter number!!!")
+            .integer("phone no does not containes decimals!!")
+            .positive("phone no can not be negative!!")
+            .max(10000000000, "phone no should be of 10 digit!!")
+            .min(1000000000, "phone no should be of 10 digit!!"),
+
+        gender: Yup.string().required("this field is required!!!"),
+
+        state: Yup.string().required("this field is required!!!"),
+
+        city: Yup.string().required("this field is required!!!"),
+
+        dob: Yup.date().required("this field is required!!!")
+            .max('2005-01-01', "your age must be 18 or greater!!")
+            .test('dateOfBirth', 'assign value to variable', (value) => {
+                dateOfBirth = value;
+                return true;
+            }),
+
+
+        academics: Yup.array().of(Yup.object().shape(
+            {
+                courseName: Yup.string().required("this field is required!!"),
+
+
+                nameOfBoardUniversity: Yup.string().required("this field is required!!").matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! "),
+
+
+                passingYear: Yup.number().required("this field is required!!").typeError("Enter number!!!")
+                    .max(new Date().getFullYear(), "you can not pass in future!!!")
+
+
+                    .test('passingYear', 'passing year is greater then dob!!', (value, ctx) => {
+                        const pYear = value
+                        const dob = new Date(dateOfBirth).getFullYear()
+                        console.log("passsing year curr", pYear, "dob", dob, "date to tmp", dateOfBirth);
+                        return pYear > dob
+                    }),
+
+                percentage: Yup.number().required("this field is required!!").typeError("Enter number!!!")
+                    .min(0, "Minimum percentage is 0")
+                    .max(100, "maximum percentage is 100")
+            }
+        )),
+
+
+
+        experiences: Yup.array().of(Yup.object().shape({
+
+            companyName: Yup.string().required("this field is required!!")
+                .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! "),
+
+            designation: Yup.string().required("this field is required!!")
+                .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! "),
+
+            from: Yup.date().required("this field is required!!")
+                .max(new Date(), "Not possible")
+                .test('from', 'from date must be greater then dob!!', (value) => {
+
+                    const dob = dateOfBirth
+                    console.log("from date", value, "dob", dob);
+                    return value > dob
+                }),
+
+            to: Yup.date().required("this field is required!!")
+                .max(new Date(), "Not possible!!!").min(Yup.ref('from'), "To date must be greater than from date!!")
+
+        })),
+
+
+        references: Yup.array().of(Yup.object().shape({
+            name: Yup.string().required("this field is required!!")
+                .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! "),
+
+            contactNo: Yup.number().required("this field is required!!").typeError("Enter number!!!")
+                .min(1000000000, "Contact no must be of 10 digits!!")
+                .max(10000000000, "Contact no must be of 10 digits!!"),
+
+            relation: Yup.string().required("this field is required!!")
+                .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! ")
+
+        })),
+
+        noticePeriod: Yup.number().required("this field is required!!").typeError("Enter number!!!")
+            .min(1, "minimum notice period is 1 !!!")
+            .max(10, "maximum notice period is 10 !!"),
+
+        expectedCTC: Yup.number().required("this field is required!!").typeError("Enter number!!!"),
+
+        currentCTC: Yup.number().required("this field is required!!").typeError("Enter number!!!"),
+
+        department: Yup.string().required("this field is required!!!"),
+
+        demoLocation: Yup.array().test('demolocation', "this field is required  !!!", (value) => {
+
+            return value.length > 0
+        }),
+
+
+
+        languages: Yup.array().test('languages', "Select atleast one language!!", (value) => {
+
+            var arr = []
+            for (var i = 0; i < value.length; i++) {
+                if (value[i].languageName != undefined && value[i].languageName.length !== 0) {
+                    arr.push(true)
+                    break
+
+                }
+                else {
+                    arr.push(false)
+                }
+
+            }
+            return arr.includes(true)
+
+        }),
+
+
+        technologies: Yup.array().test('technologies', "Select atleast one technology!!", (value) => {
+
+            var arr = []
+            for (var i = 0; i < value.length; i++) {
+                if (value[i].technologyName != undefined && value[i].technologyName.length !== 0) {
+                    arr.push(true)
+                    break
+
+                }
+                else {
+                    arr.push(false)
+                }
+
+            }
+            return arr.includes(true)
+
+        })
+
+
+    })
+
     return (
         <div>
             <Formik initialValues={initialValues}
@@ -1072,166 +1230,7 @@ const InputForm = () => {
 
                 }
 
-                validationSchema={Yup.object().shape({
-                    fname: Yup.string().required("this field is required!!")
-                        .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! ")
-                        .max(20, "Maximum characters allowed for this field is 20!!"),
-
-                    lname: Yup.string().required("this field is required!!")
-                        .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! ")
-                        .max(20, "Maximum characters allowed for this field is 20!!"),
-
-                    surname: Yup.string().required("this field is required!!")
-                        .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! ")
-                        .max(20, "Maximum characters allowed for this field is 20!!"),
-
-
-                    email: Yup.string().email("Please enter a valid email address!!")
-                        .required("this field is required!!"),
-
-
-                    phone: Yup.number().required("this field is required!!").typeError("Enter number!!!")
-                        .integer("phone no does not containes decimals!!")
-                        .positive("phone no can not be negative!!")
-                        .max(10000000000, "phone no should be of 10 digit!!")
-                        .min(1000000000, "phone no should be of 10 digit!!"),
-
-                    gender: Yup.string().required("this field is required!!!"),
-
-                    state: Yup.string().required("this field is required!!!"),
-
-                    city: Yup.string().required("this field is required!!!"),
-
-                    dob: Yup.date().required("this field is required!!!")
-                        .max('2005-01-01', "your age must be 18 or greater!!")
-                        .test('dateOfBirth', 'assign value to variable', (value) => {
-                            dateOfBirth = value;
-                            return true;
-                        }),
-
-
-                    academics: Yup.array().of(Yup.object().shape(
-                        {
-                            courseName: Yup.string().required("this field is required!!"),
-
-
-                            nameOfBoardUniversity: Yup.string().required("this field is required!!").matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! "),
-
-
-                            passingYear: Yup.number().required("this field is required!!").typeError("Enter number!!!")
-                                .max(new Date().getFullYear(), "you can not pass in future!!!")
-
-
-                                .test('passingYear', 'passing year is greater then dob!!', (value, ctx) => {
-                                    const pYear = value
-                                    const dob = new Date(dateOfBirth).getFullYear()
-                                    console.log("passsing year curr", pYear, "dob", dob, "date to tmp", dateOfBirth);
-                                    return pYear > dob
-                                }),
-
-                            percentage: Yup.number().required("this field is required!!").typeError("Enter number!!!")
-                                .min(0, "Minimum percentage is 0")
-                                .max(100, "maximum percentage is 100")
-                        }
-                    )),
-
-
-
-                    experiences: Yup.array().of(Yup.object().shape({
-
-                        companyName: Yup.string().required("this field is required!!")
-                            .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! "),
-
-                        designation: Yup.string().required("this field is required!!")
-                            .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! "),
-
-                        from: Yup.date().required("this field is required!!")
-                            .max(new Date(), "Not possible")
-                            .test('from', 'from date must be greater then dob!!', (value) => {
-
-                                const dob = dateOfBirth
-                                console.log("from date", value, "dob", dob);
-                                return value > dob
-                            }),
-
-                        to: Yup.date().required("this field is required!!")
-                            .max(new Date(), "Not possible!!!").min(Yup.ref('from'), "To date must be greater than from date!!")
-
-                    })),
-
-
-                    references: Yup.array().of(Yup.object().shape({
-                        name: Yup.string().required("this field is required!!")
-                            .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! "),
-
-                        contactNo: Yup.number().required("this field is required!!").typeError("Enter number!!!")
-                            .min(1000000000, "Contact no must be of 10 digits!!")
-                            .max(10000000000, "Contact no must be of 10 digits!!"),
-
-                        relation: Yup.string().required("this field is required!!")
-                            .matches(/^[aA-zZ]+$/, "This field should only contains alphabets!! ")
-
-                    })),
-
-                    noticePeriod: Yup.number().required("this field is required!!").typeError("Enter number!!!")
-                        .min(1, "minimum notice period is 1 !!!")
-                        .max(10, "maximum notice period is 10 !!"),
-
-                    expectedCTC: Yup.number().required("this field is required!!").typeError("Enter number!!!"),
-
-                    currentCTC: Yup.number().required("this field is required!!").typeError("Enter number!!!"),
-
-                    department: Yup.string().required("this field is required!!!"),
-
-                    demoLocation: Yup.array().test('demolocation', "this field is required  !!!", (value) => {
-
-                        return value.length > 0
-                    }),
-
-
-
-                    languages: Yup.array().test('languages', "Select atleast one language!!", (value) => {
-
-                        var arr = []
-                        for (var i = 0; i < value.length; i++) {
-                            if (value[i].languageName != undefined && value[i].languageName.length !== 0) {
-                                arr.push(true)
-                                break
-
-                            }
-                            else {
-                                arr.push(false)
-                            }
-
-                        }
-                        return arr.includes(true)
-
-                    }),
-
-
-                    technologies: Yup.array().test('technologies', "Select atleast one technology!!", (value) => {
-
-                        var arr = []
-                        for (var i = 0; i < value.length; i++) {
-                            if (value[i].technologyName != undefined && value[i].technologyName.length !== 0) {
-                                arr.push(true)
-                                break
-
-                            }
-                            else {
-                                arr.push(false)
-                            }
-
-                        }
-                        return arr.includes(true)
-
-                    })
-
-
-                })
-
-
-                }
+                validationSchema={validationSchema}
 
             >
 
