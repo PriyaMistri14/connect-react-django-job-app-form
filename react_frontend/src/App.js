@@ -75,7 +75,8 @@ function App() {
         <Route path="/register/" element={<RegistrationForm />} />
         <Route path="/input-form/" element={<InputForm />} />
         <Route path="/show-candidate/" element={<ShowCandidate />} />
-        <Route path="/update/:candidate_id" element={<Update />} />
+        {/* <Route path="/update/:candidate_id" element={<Update />} /> */}
+        <Route path="/update_form/:candidate_id" element={<InputForm />} />
 
       </Routes>
 

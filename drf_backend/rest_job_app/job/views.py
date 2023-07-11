@@ -190,11 +190,7 @@ def Pagination(request):
     serialize_data = [c for c in page_obj]
     print("@@@@@@@@@@@@@@@@@@@@serialized data", serialize_data)    
 
-
-
-    # content = {'no_of_pages': p.num_pages, 'data': page_obj}
-
-    # return Response({"paginated_obj", page_obj})   
+ 
     return JsonResponse(serialize_data, safe=False)  
 
 

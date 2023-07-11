@@ -79,7 +79,7 @@ LANGUAGE_CHOICES = [('Hindi','Hindi'),('English','English'),('Gujrati', 'Gujrati
 
 TECHNOLOGY_CHOICES = [('PHP','PHP'),('Laravel','Laravel'),('Mysql','Mysql'),('Oracle','Oracle'),('Python','Python'),('React', 'React')]
 
-PREFER_LOCATION_CHOICES= [('Ahmedabad','Ahmedabad'),('Surat','Surat'),('Rajkot','Rajkot')]
+PREFER_LOCATION_CHOICES= [('Ahmedabad','Ahmedabad'),('Surat','Surat'),('Rajkot','Rajkot'),('Bhavnagar','Bhavnagar')]
 
 DEPARTMENT_CHOICES = [('Development','Development'),('Design','Design'),('HR','HR'),('Testing','Testing')]
 

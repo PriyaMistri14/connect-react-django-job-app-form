@@ -14,11 +14,13 @@ import { Link, useNavigate } from 'react-router-dom'
 
 
 function ShowCandidate() {
+    console.log("RE RENDER");
     const [candidates, setCandidates] = useState([])  // paginated data
     const [allCandidates, setAllCandidates] = useState([])
     const [filteredCandidate, setFilteredCandidate] = useState([])
     const [no_of_pages, setNo_of_pages] = useState([])
     const [states, setStates] = useState([])
+    const [order , setOrder] = useState('asc')
 
 
     const data_per_page = 5
@@ -114,7 +116,7 @@ function ShowCandidate() {
 
 
     const onSearchChangeHandler = (e) => {
-        console.log("EEEEEE", e.target.value);
+     
         const search = e.target.value
         const fCandidate = candidates.filter((candidate) => {
 
@@ -144,27 +146,89 @@ function ShowCandidate() {
         })
         setFilteredCandidate(filtered_candidate)
     }
-    
 
 
 
-const sorting =(e)=>{
-console.log("EEEE", e.target.getAttribute('value'));
-const field = e.target.getAttribute('value')
-const aa = candidates
-switch(field){
-    case 'fname':
-        aa.sort((a, b) => (a.fname > b.fname) ? 1: -1);
-        console.log("sorted!!!!!!!", aa);
-          setCandidates(aa)
 
-}
-}
+    const sorting = (e) => {
+        console.log("EEEE", e.target.getAttribute('value'));
+        const field = e.target.getAttribute('value')
+        const arr = filteredCandidate
+        switch (field) {
+            case 'fname':
+                order == 'asc' ? 
+                arr.sort((a, b) => (a.fname.toLowerCase() > b.fname.toLowerCase()) ? 1 : -1)
+                : arr.sort((a, b) => (a.fname.toLowerCase() > b.fname.toLowerCase()) ? -1 : 1)
+                setCandidates([...arr])
+                setFilteredCandidate([...arr])               
+              
+                break
+
+            case 'lname':
+                order == 'asc' ?
+                arr.sort((a, b) => (a.lname.toLowerCase() > b.lname.toLowerCase()) ? 1 : -1) :
+                arr.sort((a, b) => (a.lname.toLowerCase() > b.lname.toLowerCase()) ? -1 : 1)
+                setCandidates([...arr])
+                setFilteredCandidate([...arr])               
+                break
 
 
-console.log("sorted!!!!!!! outside", candidates);
+            case 'surname':
+                order == 'asc' ? 
+                arr.sort((a, b) => (a.surname.toLowerCase() > b.surname.toLowerCase()) ? 1 : -1) :
+                arr.sort((a, b) => (a.surname.toLowerCase() > b.surname.toLowerCase()) ? -1 : 1)
+                setCandidates([...arr])
+                setFilteredCandidate([...arr])               
+                break
+
+             
+            case 'contact_no':
+                order == 'asc' ? 
+                arr.sort((a, b) => (a.contact_no > b.contact_no) ? 1 : -1) :
+                arr.sort((a, b) => (a.contact_no > b.contact_no) ? -1 : 1)
+                setCandidates([...arr])
+                setFilteredCandidate([...arr])               
+                break   
+
+
+            case 'email':
+                order == 'asc' ? 
+                arr.sort((a, b) => (a.email.toLowerCase() > b.email.toLowerCase()) ? 1 : -1) : 
+                arr.sort((a, b) => (a.email.toLowerCase() > b.email.toLowerCase()) ? -1 : 1) 
+                setCandidates([...arr])
+                setFilteredCandidate([...arr])               
+                break
+
+
+            case 'state':
+                order == 'asc' ? 
+                arr.sort((a, b) => (a.state.toLowerCase() > b.state.toLowerCase()) ? 1 : -1) :
+                arr.sort((a, b) => (a.state.toLowerCase() > b.state.toLowerCase()) ? -1 : 1)
+                setCandidates([...arr])
+                setFilteredCandidate([...arr])               
+                break
+
+            case 'city':
+                order == 'asc' ? 
+                arr.sort((a, b) => (a.city.toLowerCase() > b.city.toLowerCase()) ? 1 : -1) : 
+                arr.sort((a, b) => (a.city.toLowerCase() > b.city.toLowerCase()) ? -1 : 1)
+                setCandidates([...arr])
+                setFilteredCandidate([...arr])               
+                break
+
+
+            default:
+                console.log("No match found for sorting!!")
+
+        }
+
+        order== 'asc' ? setOrder("desc") : setOrder('asc')
+    }
+
+
 
     useEffect(() => {
+        console.log("use effect is called");
         (async () => {
             try {
                 if (localStorage.getItem("access_token") && axiosIntance.defaults.headers['Authorization']) {
@@ -185,12 +249,8 @@ console.log("sorted!!!!!!! outside", candidates);
                         console.log("iii", i);
                         arr.push(i + 1)
 
-
                     }
                     setNo_of_pages(arr)
-
-
-
 
                     setAllCandidates(res.data)
                     // setFilteredCandidate(res.data)
@@ -215,38 +275,39 @@ console.log("sorted!!!!!!! outside", candidates);
 
     return (
         <div><br /><br />
-            <input type='search' name='search' onChange={(e) => onSearchChangeHandler(e)} placeholder="Search Here!" />
+
+            <input className='search' type='search' name='search' onChange={(e) => onSearchChangeHandler(e)} placeholder="Search Here!" />
 
 
-            <select onChange={(e) => filterByState(e)}>
+            Filter By : <select onChange={(e) => filterByState(e)}>
                 <option selected hidden>Select state</option>
                 {
                     states.map(state => <option value={state.name}>{state.name}</option>)
                 }
-            </select><br /><br />
+            </select><br /><br /><br /><br />
 
-            <table border='1px'>
-                            <tr>
-                                <td onClick={(e)=>sorting(e)} value='fname' >First Name </td>
-                                <td onClick={(e)=>sorting(e)} value='lname'>Last Name</td>
-                                <td onClick={(e)=>sorting(e)} value='surname'>Surname</td>
-                                <td onClick={(e)=>sorting(e)} value='contact_no'>Contact No</td>
-                                <td onClick={(e)=>sorting(e)} value='city'>City</td>
-                                <td onClick={(e)=>sorting(e)} value='state'>State</td>
-                                <td onClick={(e)=>sorting(e)} value='email'>Email</td>
-                                <td >Gender</td>
-                                <td >DOB</td>
-                                <td >DELETE</td>
-                                <td >UPDATE</td>
-
-
-                            </tr>
+            <table border='1px' align='center'>
+                <tr>
+                    <td onClick={(e) => sorting(e)} value='fname' >First Name </td>
+                    <td onClick={(e) => sorting(e)} value='lname'>Last Name</td>
+                    <td onClick={(e) => sorting(e)} value='surname'>Surname</td>
+                    <td onClick={(e) => sorting(e)} value='contact_no'>Contact No</td>
+                    <td onClick={(e) => sorting(e)} value='city'>City</td>
+                    <td onClick={(e) => sorting(e)} value='state'>State</td>
+                    <td onClick={(e) => sorting(e)} value='email'>Email</td>
+                    <td >Gender</td>
+                    <td >DOB</td>
+                    <td >DELETE</td>
+                    <td >UPDATE</td>
 
 
-            {
-                filteredCandidate.length != 0 ? filteredCandidate.map((candidate) => (
-                    // <div key={candidate.id}>
-                        <>                      
+                </tr>
+
+
+                {
+                    filteredCandidate.length != 0 ? filteredCandidate.map((candidate) => (
+                        // <div key={candidate.id}>
+                        <>
                             <tr>
                                 <td> {candidate.fname}</td>
                                 <td> {candidate.lname}</td>
@@ -258,31 +319,34 @@ console.log("sorted!!!!!!! outside", candidates);
                                 <td>{candidate.gender}</td>
                                 <td>{candidate.dob}</td>
                                 <td>  <a href='/show-candidate/' onClick={() => deleteCandidate(candidate)}>Delete </a></td>
-                                <td>  <Link to={`/update/${candidate.id}`} >Update</Link></td>
+                                {/* <td>  <Link to={`/update/${candidate.id}`} >Update</Link></td> */}
+                                <td>  <Link to={`/update_form/${candidate.id}`} >Update</Link></td>
 
                             </tr></>
 
 
 
 
-                           // {/* <ShowData candidate={candidate} /> */}
-                      
-                     //   {/* <br /><br /> */}
-                      //  {/* <a href='/show-candidate/' onClick={() => deleteCandidate(candidate)}>Delete </a>
-                     //   <br /><br />
-                     //   <Link to={`/update/${candidate.id}`} >Update</Link>
-                      //  <br /><br /> */}
+                        // {/* <ShowData candidate={candidate} /> */}
 
-                    // </div>
-                )
-                ) : <h3>NO DATA FOUND!!!</h3>
+                        //   {/* <br /><br /> */}
+                        //  {/* <a href='/show-candidate/' onClick={() => deleteCandidate(candidate)}>Delete </a>
+                        //   <br /><br />
+                        //   <Link to={`/update/${candidate.id}`} >Update</Link>
+                        //  <br /><br /> */}
 
-            }
-              </table><br /><br />
+                        // </div>
+                    )
+                    ) : <h3>NO DATA FOUND!!!</h3>
+
+                }
+            </table><br /><br />
+            <div className='page-numbers'>
             {
-                no_of_pages.map(page => <a onClick={(e) => changePage(e)} name={page} >{page}</a>)
+                no_of_pages.map(page => <a className='page' onClick={(e) => changePage(e)} name={page} >{page}</a>)
 
             }
+            </div>
 
             <br /> </div>
     )
