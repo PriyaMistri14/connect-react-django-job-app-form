@@ -15,6 +15,9 @@ import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 
+import { axiosPOST } from '../../axiosApi'
+
+
 
 function LoginForm() {
 
@@ -40,7 +43,7 @@ function LoginForm() {
 
         try {
 
-            const res = await axiosIntance.post('http://127.0.0.1:8000/login/', {
+            const res = await axiosPOST('login/', {
                 username: values.username,
                 password: values.password
             })

@@ -18,7 +18,12 @@ import { Routes, Route, Link } from "react-router-dom";
 
 import { useNavigate } from 'react-router-dom';
 
-import Update from './components/update/update.component';
+// import Update from './components/update/update.component';
+
+import { axiosPOST } from './axiosApi';
+
+
+
 
 function App() {
 
@@ -29,7 +34,7 @@ function App() {
 
     try {
 
-      const res = await axiosIntance.post("http://127.0.0.1:8000/job/logout/", {
+      const res = await axiosPOST("job/logout/", {
         refresh_token: localStorage.getItem("refresh_token")
       })
 

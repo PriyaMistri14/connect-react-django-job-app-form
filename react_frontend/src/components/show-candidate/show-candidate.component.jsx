@@ -3,7 +3,6 @@ import React from 'react'
 
 import './show-candidate.styles.css'
 
-import ShowData from '../show-data/show-data.component'
 import axiosIntance from '../../axiosApi'
 
 import { useState, useEffect } from 'react'
@@ -12,17 +11,21 @@ import { Link, useNavigate } from 'react-router-dom'
 
 
 
+import { axiosDELETE, axiosGET, axiosPOST } from '../../axiosApi'
+
+
+
 
 function ShowCandidate() {
     console.log("RE RENDER");
-    const [candidates, setCandidates] = useState([])  // paginated data
-    const [allCandidates, setAllCandidates] = useState([])
-    const [filteredCandidate, setFilteredCandidate] = useState([])
+    const [candidates, setCandidates] = useState([])  // paginated data 
     const [no_of_pages, setNo_of_pages] = useState([])
     const [states, setStates] = useState([])
-    const [order , setOrder] = useState('asc')
-
-
+    const [order, setOrder] = useState('asc')
+    const [sort, setSort] = useState("id")
+    const [currentPage, setCurrentPage] = useState(1)
+    const [search, setSearch] = useState("")
+    
     const data_per_page = 5
 
 
@@ -46,45 +49,45 @@ function ShowCandidate() {
 
             try {
 
-                const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/candidate/${candidate_id}/`)
+                const res = await axiosDELETE(`job/candidate/${candidate_id}/`)
 
                 academics.map(async (academic) => {
                     const academic_id = academic.id
                     console.log("academic id", academic_id)
-                    const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/academic/${academic_id}/`)
+                    const res = await axiosDELETE(`job/academic/${academic_id}/`)
                 })
 
 
                 experiences.map(async (experience) => {
                     const experience_id = experience.id
                     console.log("experience id", experience_id)
-                    const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/experience/${experience_id}/`)
+                    const res = await axiosDELETE(`job/experience/${experience_id}/`)
                 })
 
                 languages.map(async (language) => {
                     const language_id = language.id
                     console.log("language id", language_id)
-                    const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/language/${language_id}/`)
+                    const res = await axiosDELETE(`job/language/${language_id}/`)
                 })
 
 
                 technologies.map(async (technology) => {
                     const technology_id = technology.id
                     console.log("technology id", technology_id)
-                    const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/technology/${technology_id}/`)
+                    const res = await axiosDELETE(`job/technology/${technology_id}/`)
                 })
 
 
                 references.map(async (reference) => {
                     const reference_id = reference.id
                     console.log("reference id", reference_id)
-                    const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/reference/${reference_id}/`)
+                    const res = await axiosDELETE(`job/reference/${reference_id}/`)
                 })
 
                 preferences.map(async (preference) => {
                     const preference_id = preference.id
                     console.log("preference id", preference_id)
-                    const res = await axiosIntance.delete(`http://127.0.0.1:8000/job/preference/${preference_id}/`)
+                    const res = await axiosDELETE(`job/preference/${preference_id}/`)
                 })
                 alert("SUCCESSFULLY DELETED !!!!!!")
 
@@ -98,13 +101,15 @@ function ShowCandidate() {
 
     const changePage = async (e) => {
         const page_no = e.target.name
-        console.log("]]]]]]]]]]]]", page_no);
+        console.log("]]]]]]]]]]]]", page_no,sort, order);
+        
         try {
 
-            const p = await axiosIntance.get(`http://127.0.0.1:8000/job/pagination/?data_per_page=${data_per_page}&page=${page_no}/`)
+            const p = await axiosGET(`job/pagination/?data_per_page=${data_per_page}&sort=${sort}&order=${order}&search=${search}&page=${page_no}/`)
             console.log("PAGINATAED DATA AFTER PAGE CHANGE ::: ", p.data);
-            setCandidates(p.data)
-            setFilteredCandidate(p.data)
+            setCandidates(p.data.slice(0,-1))
+         
+            setCurrentPage(page_no)
 
         } catch (error) {
             console.log("Error", error);
@@ -115,21 +120,44 @@ function ShowCandidate() {
 
 
 
-    const onSearchChangeHandler = (e) => {
-     
-        const search = e.target.value
-        const fCandidate = candidates.filter((candidate) => {
+    const onSearchChangeHandler = async(e) => {
 
-            return candidate.fname.includes(search)
-                || candidate.lname.includes(search)
-                || candidate.surname.includes(search)
-                || candidate.contact_no.includes(search)
-                || candidate.city.includes(search)
-                || candidate.state.includes(search)
-                || candidate.email.includes(search)
-        })
-        console.log("filtered Candidates :   ", fCandidate);
-        setFilteredCandidate(fCandidate)
+        const search = e.target.value
+        setSearch(search)
+
+
+        const p = await axiosGET(`job/pagination/?data_per_page=${data_per_page}&sort=${sort}&order=${order}&search=${search}&page=1/`)
+        console.log("PAGINATAED DATA AFTER SEARCH::: ", p.data, "no of pages::", no_of_pages);
+        setCandidates(p.data.slice(0,-1))     // all elements except last is actual data , and last one is no of pages thats why this slice is used
+       
+        
+     
+        const n = p.data.slice(-1)
+        var arr = []
+
+        for (var i = 0; i < n; i++) {
+            console.log("iii", i);
+            arr.push(i + 1)
+
+        }
+        setNo_of_pages(arr)
+      
+
+
+
+// this is for per page search not whole
+        // const fCandidate = candidates.filter((candidate) => {
+
+        //     return candidate.fname.includes(search)
+        //         || candidate.lname.includes(search)
+        //         || candidate.surname.includes(search)
+        //         || candidate.contact_no.includes(search)
+        //         || candidate.city.includes(search)
+        //         || candidate.state.includes(search)
+        //         || candidate.email.includes(search)
+        // })
+        // console.log("filtered Candidates :   ", fCandidate);
+        // setFilteredCandidate(fCandidate)
 
 
 
@@ -138,82 +166,143 @@ function ShowCandidate() {
 
 
 
-    const filterByState = (e) => {
+    const filterByState = async(e) => {
         const state = e.target.value
 
-        const filtered_candidate = candidates.filter((cand) => {
-            return cand.state.includes(state)
-        })
-        setFilteredCandidate(filtered_candidate)
+        setSearch(state)
+
+
+        const p = await axiosGET(`job/pagination/?data_per_page=${data_per_page}&sort=${sort}&order=${order}&search=${state}&page=1/`)
+        console.log("PAGINATAED DATA AFTER FILTER::: ", p.data, "no of pages::", no_of_pages);
+        setCandidates(p.data.slice(0,-1))     // all elements except last is actual data , and last one is no of pages thats why this slice is used
+       
+        
+     
+        const n = p.data.slice(-1)
+        var arr = []
+
+        for (var i = 0; i < n; i++) {
+            console.log("iii", i);
+            arr.push(i + 1)
+
+        }
+        setNo_of_pages(arr)
+
+
+
+
+        // const filtered_candidate = candidates.filter((cand) => {
+        //     return cand.state.includes(state)
+        // })
+        // setFilteredCandidate(filtered_candidate)
     }
 
 
 
 
-    const sorting = (e) => {
-        console.log("EEEE", e.target.getAttribute('value'));
+    const sorting = async (e) => {
+        console.log("EEEE", e.target.getAttribute('value'), "order", order, "sort : ", sort, "search :  ", search);
         const field = e.target.getAttribute('value')
-        const arr = filteredCandidate
+     
         switch (field) {
             case 'fname':
-                order == 'asc' ? 
-                arr.sort((a, b) => (a.fname.toLowerCase() > b.fname.toLowerCase()) ? 1 : -1)
-                : arr.sort((a, b) => (a.fname.toLowerCase() > b.fname.toLowerCase()) ? -1 : 1)
-                setCandidates([...arr])
-                setFilteredCandidate([...arr])               
-              
+                setSort('fname')
+
+                const p_fname = await axiosGET(`job/pagination/?data_per_page=${data_per_page}&sort=fname&order=${order}&search=${search}&page=1/`)
+                console.log("PAGINATAED DATA AFTER SORT CHANGE ::: ", p_fname.data);
+                setCandidates(p_fname.data.slice(0,-1))
+             
+                setCurrentPage(1)
+
+                
+
+                // this is for page wise sort, not whole
+                // order == 'asc' ? 
+                // arr.sort((a, b) => (a.fname.toLowerCase() > b.fname.toLowerCase()) ? 1 : -1)
+                // : arr.sort((a, b) => (a.fname.toLowerCase() > b.fname.toLowerCase()) ? -1 : 1)
+                // setCandidates([...arr])
+                // setFilteredCandidate([...arr])               
+
                 break
 
             case 'lname':
-                order == 'asc' ?
-                arr.sort((a, b) => (a.lname.toLowerCase() > b.lname.toLowerCase()) ? 1 : -1) :
-                arr.sort((a, b) => (a.lname.toLowerCase() > b.lname.toLowerCase()) ? -1 : 1)
-                setCandidates([...arr])
-                setFilteredCandidate([...arr])               
+
+
+                setSort('lname')
+
+                const p_lname = await axiosGET(`job/pagination/?data_per_page=${data_per_page}&sort=lname&order=${order}&search=${search}&page=1/`)
+                console.log("PAGINATAED DATA AFTER SORT CHANGE ::: ", p_lname.data);
+                setCandidates(p_lname.data.slice(0,-1))
+            
+                setCurrentPage(1)
                 break
 
 
             case 'surname':
-                order == 'asc' ? 
-                arr.sort((a, b) => (a.surname.toLowerCase() > b.surname.toLowerCase()) ? 1 : -1) :
-                arr.sort((a, b) => (a.surname.toLowerCase() > b.surname.toLowerCase()) ? -1 : 1)
-                setCandidates([...arr])
-                setFilteredCandidate([...arr])               
+
+
+                setSort('surname')
+
+                const p_surname = await axiosGET(`job/pagination/?data_per_page=${data_per_page}&sort=surname&order=${order}&search=${search}&page=1/`)
+                console.log("PAGINATAED DATA AFTER SORT CHANGE ::: ", p_surname.data);
+                setCandidates(p_surname.data.slice(0,-1))
+            
+                setCurrentPage(1)
+
+                    
                 break
 
-             
+
             case 'contact_no':
-                order == 'asc' ? 
-                arr.sort((a, b) => (a.contact_no > b.contact_no) ? 1 : -1) :
-                arr.sort((a, b) => (a.contact_no > b.contact_no) ? -1 : 1)
-                setCandidates([...arr])
-                setFilteredCandidate([...arr])               
-                break   
+
+                setSort('contact_no')
+
+                const p_contact_no = await axiosGET(`job/pagination/?data_per_page=${data_per_page}&sort=contact_no&order=${order}&search=${search}&page=1/`)
+                console.log("PAGINATAED DATA AFTER SORT CHANGE ::: ", p_contact_no.data);
+                setCandidates(p_contact_no.data.slice(0,-1))
+              
+                setCurrentPage(1)
+            
+                break
 
 
             case 'email':
-                order == 'asc' ? 
-                arr.sort((a, b) => (a.email.toLowerCase() > b.email.toLowerCase()) ? 1 : -1) : 
-                arr.sort((a, b) => (a.email.toLowerCase() > b.email.toLowerCase()) ? -1 : 1) 
-                setCandidates([...arr])
-                setFilteredCandidate([...arr])               
+
+                setSort('email')
+
+                const p_email = await axiosGET(`job/pagination/?data_per_page=${data_per_page}&sort=email&order=${order}&search=${search}&page=1/`)
+                console.log("PAGINATAED DATA AFTER SORT CHANGE ::: ", p_email.data);
+                setCandidates(p_email.data.slice(0,-1))
+               
+                setCurrentPage(1)
+     
                 break
 
 
             case 'state':
-                order == 'asc' ? 
-                arr.sort((a, b) => (a.state.toLowerCase() > b.state.toLowerCase()) ? 1 : -1) :
-                arr.sort((a, b) => (a.state.toLowerCase() > b.state.toLowerCase()) ? -1 : 1)
-                setCandidates([...arr])
-                setFilteredCandidate([...arr])               
+
+                setSort('state')
+
+                const p_state = await axiosGET(`job/pagination/?data_per_page=${data_per_page}&sort=state&order=${order}&search=${search}&page=1/`)
+                console.log("PAGINATAED DATA AFTER SORT CHANGE ::: ", p_state.data);
+                setCandidates(p_state.data.slice(0,-1))
+            
+                setCurrentPage(1)
+
+         
                 break
 
             case 'city':
-                order == 'asc' ? 
-                arr.sort((a, b) => (a.city.toLowerCase() > b.city.toLowerCase()) ? 1 : -1) : 
-                arr.sort((a, b) => (a.city.toLowerCase() > b.city.toLowerCase()) ? -1 : 1)
-                setCandidates([...arr])
-                setFilteredCandidate([...arr])               
+
+                setSort('city')
+
+                const p_city = await axiosGET(`job/pagination/?data_per_page=${data_per_page}&sort=city&order=${order}&search=${search}&page=1/`)
+                console.log("PAGINATAED DATA AFTER SORT CHANGE ::: ", p_city.data);
+                setCandidates(p_city.data.slice(0,-1))
+                
+                setCurrentPage(1)
+
+                       
                 break
 
 
@@ -222,7 +311,7 @@ function ShowCandidate() {
 
         }
 
-        order== 'asc' ? setOrder("desc") : setOrder('asc')
+        order == 'asc' ? setOrder("desc") : setOrder('asc')
     }
 
 
@@ -233,16 +322,18 @@ function ShowCandidate() {
             try {
                 if (localStorage.getItem("access_token") && axiosIntance.defaults.headers['Authorization']) {
 
-                    const state = await axiosIntance.get("http://127.0.0.1:8000/job/state/")
+                    const state = await axiosGET("job/state/")
                     console.log("allState", state.data)
                     setStates(state.data)
 
 
-                    const res = await axiosIntance.get("http://127.0.0.1:8000/job/candidate_all/")
-                    console.log("resopnseeee:", res.data.length)
-
-                    const total_data = res.data.length
-                    const n = Math.ceil(total_data / data_per_page)
+                    const p = await axiosGET(`job/pagination/?data_per_page=${data_per_page}&sort=${sort}&order=${order}&page=1/`)
+                    console.log("PAGINATAED DATA ::: ", p.data, "no of pages::", no_of_pages);
+                    setCandidates(p.data.slice(0,-1))     // all elements except last is actual data , and last one is no of pages thats why this slice is used
+                
+                    
+                 
+                    const n = p.data.slice(-1)
                     var arr = []
 
                     for (var i = 0; i < n; i++) {
@@ -252,12 +343,10 @@ function ShowCandidate() {
                     }
                     setNo_of_pages(arr)
 
-                    setAllCandidates(res.data)
-                    // setFilteredCandidate(res.data)
-                    const p = await axiosIntance.get(`http://127.0.0.1:8000/job/pagination/?data_per_page=${data_per_page}&page=1/`)
-                    console.log("PAGINATAED DATA ::: ", p.data, "no of pages::", no_of_pages);
-                    setCandidates(p.data)
-                    setFilteredCandidate(p.data)
+                    console.log("no of pages:  ", n, "setNo_of_pages:    ", setNo_of_pages);
+
+
+
                 }
                 else {
                     goToLogin()
@@ -305,7 +394,7 @@ function ShowCandidate() {
 
 
                 {
-                    filteredCandidate.length != 0 ? filteredCandidate.map((candidate) => (
+                    candidates.length != 0 ? candidates.map((candidate) => (
                         // <div key={candidate.id}>
                         <>
                             <tr>
@@ -342,10 +431,11 @@ function ShowCandidate() {
                 }
             </table><br /><br />
             <div className='page-numbers'>
-            {
-                no_of_pages.map(page => <a className='page' onClick={(e) => changePage(e)} name={page} >{page}</a>)
+                {
+                    no_of_pages.map(page =>currentPage == page ? <a className='page' onClick={(e) => changePage(e)} name={page} >{page}</a> :
+                    <a style={{color:"red"}} className='page' onClick={(e) => changePage(e)} name={page} >{page}</a> )
 
-            }
+                }
             </div>
 
             <br /> </div>

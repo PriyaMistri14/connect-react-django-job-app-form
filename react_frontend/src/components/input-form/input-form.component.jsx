@@ -6,34 +6,40 @@ import { Formik, Form, Field, ErrorMessage, FieldArray } from 'formik'
 import * as Yup from "yup"
 
 import React, { useEffect, useState } from 'react'
-import axiosIntance from '../../axiosApi'
+import axiosIntance, { axiosDELETE } from '../../axiosApi'
 
 import { useNavigate } from 'react-router-dom'
 
 import { useParams } from 'react-router-dom'
 
+// ...
+import { axiosGET, axiosPOST, axiosPUT } from '../../axiosApi'
 
-const course = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/1/")
+
+
+
+
+const course = await axiosGET("job/select_all/1/")
 console.log("Courses", course.data.options)
 const allCourses = course.data.options
 
-const language = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/2/")
+const language = await axiosGET("job/select_all/2/")
 console.log("allLanguages", language.data.options)
 const allLanguages = language.data.options
 
-const technology = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/3/")
+const technology = await axiosGET("job/select_all/3/")
 console.log("allTechnology", technology.data.options)
 const allTechnologies = technology.data.options
 
-const prefer_location = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/4/")
+const prefer_location = await axiosGET("job/select_all/4/")
 console.log("allPreferLocation", prefer_location.data.options)
 const allPreferLocations = prefer_location.data.options
 
-const department = await axiosIntance.get("http://127.0.0.1:8000/job/select_all/5/")
+const department = await axiosGET("job/select_all/5/")
 console.log("allDepartment", department.data.options)
 const allDepartments = department.data.options
 
-const state = await axiosIntance.get("http://127.0.0.1:8000/job/state/")
+const state = await axiosGET("job/state/")
 console.log("allState", state.data)
 const allStates = state.data
 
@@ -85,9 +91,11 @@ const InputForm = () => {
         var cities = []
 
         try {
-            const city = await axiosIntance.post("http://127.0.0.1:8000/job/getCities/", {
+            const payload ={
                 state: state
-            })
+            }
+            const city = await axiosPOST("job/getCities/", payload )
+            
 
             cities = city.data.fetched_cities
 
@@ -179,7 +187,8 @@ const InputForm = () => {
     const createCandidate = async (values) => {
         try {
 
-            const resCand = await axiosIntance.post("http://127.0.0.1:8000/job/candidate/", {
+
+            const payload = {
                 fname: values.fname,
                 lname: values.lname,
                 surname: values.surname,
@@ -189,21 +198,25 @@ const InputForm = () => {
                 state: values.state,
                 gender: values.gender,
                 dob: values.dob
-            })
+            }
+
+            const resCand = await axiosPOST("job/candidate/", payload)
             console.log("Response candidate created:", resCand)
 
 
             if (values.academics.length != 0) {
                 const res = values.academics.map(async (academic) => {
 
-                    const resAcademics = await axiosIntance.post("http://127.0.0.1:8000/job/academic/", {
+                    const payload = {
                         course_name: academic.courseName,
                         name_of_board_university: academic.nameOfBoardUniversity,
                         passing_year: academic.passingYear,
                         percentage: academic.percentage,
                         candidate: resCand.data.id
 
-                    })
+                    }
+
+                    const resAcademics = await axiosPOST("job/academic/", payload)
 
                     console.log("Response academic created:", resAcademics)
                 })
@@ -215,13 +228,15 @@ const InputForm = () => {
             if (values.experiences.length != 0) {
                 const res = values.experiences.map(async (experience) => {
 
-                    const resExperience = await axiosIntance.post("http://127.0.0.1:8000/job/experience/", {
+                    const payload = {
                         company_name: experience.companyName,
                         designation: experience.designation,
                         from_date: experience.from,
                         to_date: experience.to,
                         candidate: resCand.data.id
-                    })
+                    }
+
+                    const resExperience = await axiosPOST("job/experience/", payload)
 
                     console.log("Response experience created:", resExperience)
                 })
@@ -237,13 +252,15 @@ const InputForm = () => {
                 const res = values.languages.map(async (language) => {
                     if (language != undefined && language.languageName.length != 0) {
 
-                        const resLanguage = await axiosIntance.post("http://127.0.0.1:8000/job/language/", {
+                        const payload = {
                             language: language.languageName[0],
                             read: language.read,
                             write: language.write,
                             speak: language.speak,
                             candidate: resCand.data.id
-                        })
+                        }
+
+                        const resLanguage = await axiosPOST("job/language/",payload )
                         console.log("Response language created:", resLanguage)
                     }
 
@@ -258,11 +275,13 @@ const InputForm = () => {
                 const res = values.technologies.map(async (technology) => {
                     if (technology != undefined && technology.technologyName.length != 0) {
 
-                        const resTechnology = await axiosIntance.post("http://127.0.0.1:8000/job/technology/", {
+                        const payload = {
                             technology: technology.technologyName[0],
                             ranting: technology.rating,
                             candidate: resCand.data.id
-                        })
+                        }
+
+                        const resTechnology = await axiosPOST("job/technology/",payload )
                         console.log("Response technology created:", resTechnology)
                     }
 
@@ -276,13 +295,14 @@ const InputForm = () => {
 
             if (values.references.length != 0) {
                 const res = values.references.map(async (reference) => {
-
-                    const resReference = await axiosIntance.post("http://127.0.0.1:8000/job/reference/", {
+                    const payload = {
                         refe_name: reference.name,
                         refe_contact_no: reference.contactNo,
                         refe_relation: reference.relation,
                         candidate: resCand.data.id
-                    })
+                    }
+
+                    const resReference = await axiosPOST("job/reference/", payload)
                     console.log("Response relation created:", resReference)
 
 
@@ -295,14 +315,16 @@ const InputForm = () => {
             if (values.demoLocation.length != 0) {
                 const res = values.demoLocation.map(async (location) => {
 
-                    const resPreference = await axiosIntance.post("http://127.0.0.1:8000/job/preference/", {
+                    const payload = {
                         prefer_location: location,
                         notice_period: values.noticePeriod,
                         expected_ctc: values.expectedCTC,
                         current_ctc: values.currentCTC,
                         department: values.department,
                         candidate: resCand.data.id
-                    })
+                    }
+
+                    const resPreference = await axiosPOST("job/preference/",payload )
                     console.log("Response preferences created:", resPreference)
 
 
@@ -336,7 +358,7 @@ const InputForm = () => {
     const fetchCandidate = async () => {
 
         try {
-            const candidate_fetched = await axiosIntance.get(`http://127.0.0.1:8000/job/candidate_all/${candidate_id}/`)
+            const candidate_fetched = await axiosGET(`job/candidate_all/${candidate_id}/`)
 
             const candidate = candidate_fetched.data
             const state = candidate.state
@@ -525,7 +547,8 @@ const InputForm = () => {
 
         try {
 
-            const resCand = await axiosIntance.put(`http://127.0.0.1:8000/job/candidate/${candidate_id}/`, {
+
+            const payload ={
                 fname: values.fname,
                 lname: values.lname,
                 surname: values.surname,
@@ -535,7 +558,9 @@ const InputForm = () => {
                 state: values.state,
                 gender: values.gender,
                 dob: values.dob
-            })
+            }
+
+            const resCand = await axiosPUT(`job/candidate/${candidate_id}/`,payload )
             console.log("Response candidate updated:", resCand)
 
 
@@ -547,14 +572,17 @@ const InputForm = () => {
                 if (values.academics.length === acde_ids.length) {
 
                     for (var i = 0; i < values.academics.length; i++) {
-                        const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/academic/${acde_ids[i]}/`, {
+
+                        const payload =  {
                             course_name: values.academics[i].courseName,
                             name_of_board_university: values.academics[i].nameOfBoardUniversity,
                             passing_year: values.academics[i].passingYear,
                             percentage: values.academics[i].percentage,
                             candidate: candidate_id
 
-                        })
+                        }
+
+                        const resAcademics = await axiosPUT(`job/academic/${acde_ids[i]}/`,payload)
 
                         console.log("Response academic updated:", resAcademics)
                     }
@@ -565,28 +593,31 @@ const InputForm = () => {
                 else if (values.academics.length >= acde_ids.length) {
 
                     for (var i = 0; i < acde_ids.length; i++) {
-                        const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/academic/${acde_ids[i]}/`, {
+
+                        const payload ={
                             course_name: values.academics[i].courseName,
                             name_of_board_university: values.academics[i].nameOfBoardUniversity,
                             passing_year: values.academics[i].passingYear,
                             percentage: values.academics[i].percentage,
                             candidate: candidate_id
 
-                        })
+                        }
+                        const resAcademics = await axiosPUT(`job/academic/${acde_ids[i]}/`,payload )
 
                         console.log("Response academic updated:", resAcademics)
                     }
 
 
                     for (var i = acde_ids.length; i < values.academics.length; i++) {
-
-                        const resAcademics = await axiosIntance.post("http://127.0.0.1:8000/job/academic/", {
+                        const payload = {
                             course_name: values.academics[i].courseName,
                             name_of_board_university: values.academics[i].nameOfBoardUniversity,
                             passing_year: values.academics[i].passingYear,
                             percentage: values.academics[i].percentage,
                             candidate: candidate_id
-                        })
+                        }
+
+                        const resAcademics = await axiosPOST("job/academic/", payload )
 
                         console.log("Response academic created:", resAcademics)
                     }
@@ -596,21 +627,24 @@ const InputForm = () => {
                 //update & delete
                 else if (values.academics.length <= acde_ids.length) {
                     for (var i = 0; i < values.academics.length; i++) {
-                        const resAcademics = await axiosIntance.put(`http://127.0.0.1:8000/job/academic/${acde_ids[i]}/`, {
+
+                        const payload = {
                             course_name: values.academics[i].courseName,
                             name_of_board_university: values.academics[i].nameOfBoardUniversity,
                             passing_year: values.academics[i].passingYear,
                             percentage: values.academics[i].percentage,
                             candidate: candidate_id
 
-                        })
+                        }
+
+                        const resAcademics = await axiosPUT(`job/academic/${acde_ids[i]}/`,payload)
 
                         console.log("Response academic updated:", resAcademics)
                     }
 
 
                     for (var i = values.academics.length; i < acde_ids.length; i++) {
-                        const resAcademics = await axiosIntance.delete(`http://127.0.0.1:8000/job/academic/${acde_ids[i]}/`)
+                        const resAcademics = await axiosDELETE(`job/academic/${acde_ids[i]}/`)
 
                         console.log("Response academic deleted:", resAcademics)
                     }
@@ -626,14 +660,18 @@ const InputForm = () => {
                 if (values.experiences.length === expe_ids.length) {
                     console.log("CAND IDDD AND EXPE IDD IN IF", candidate_id, expe_ids);
                     for (var i = 0; i < values.experiences.length; i++) {
-                        const resExpe = await axiosIntance.put(`http://127.0.0.1:8000/job/experience/${expe_ids[i]}/`, {
+
+                        const payload = {
                             company_name: values.experiences[i].companyName,
                             designation: values.experiences[i].designation,
                             from_date: values.experiences[i].from,
                             to_date: values.experiences[i].to,
                             candidate: candidate_id
 
-                        })
+                        }
+
+
+                        const resExpe = await axiosPUT(`job/experience/${expe_ids[i]}/`,payload )
 
                         console.log("Response experince updated :", resExpe)
                     }
@@ -643,14 +681,15 @@ const InputForm = () => {
                 else if (values.experiences.length >= expe_ids.length) {
 
                     for (var i = 0; i < expe_ids.length; i++) {
-                        const resExpe = await axiosIntance.put(`http://127.0.0.1:8000/job/experience/${expe_ids[i]}/`, {
+                        const payload =  {
                             company_name: values.experiences[i].companyName,
                             designation: values.experiences[i].designation,
                             from_date: values.experiences[i].from,
                             to_date: values.experiences[i].to,
                             candidate: candidate_id
 
-                        })
+                        }
+                        const resExpe = await axiosPUT(`job/experience/${expe_ids[i]}/`,payload)
 
                         console.log("Response experience updated:", resExpe)
                     }
@@ -658,14 +697,16 @@ const InputForm = () => {
 
                     for (var i = expe_ids.length; i < values.experiences.length; i++) {
 
-                        const resExpe = await axiosIntance.post("http://127.0.0.1:8000/job/experience/", {
+                        const payload = {
                             company_name: values.experiences[i].companyName,
                             designation: values.experiences[i].designation,
                             from_date: values.experiences[i].from,
                             to_date: values.experiences[i].to,
                             candidate: candidate_id
 
-                        })
+                        }
+
+                        const resExpe = await axiosPOST("job/experience/",payload )
 
                         console.log("Response exxperience created:", resExpe)
 
@@ -677,20 +718,23 @@ const InputForm = () => {
 
                 else if (values.experiences.length <= expe_ids.length) {
                     for (var i = 0; i < values.experiences.length; i++) {
-                        const resExpe = await axiosIntance.put(`http://127.0.0.1:8000/job/experince/${expe_ids[i]}/`, {
+
+                        const payload ={
                             company_name: values.experiences[i].companyName,
                             designation: values.experiences[i].designation,
                             from_date: values.experiences[i].from,
                             to_date: values.experiences[i].to,
                             candidate: candidate_id
-                        })
+                        }
+
+                        const resExpe = await axiosPUT(`job/experince/${expe_ids[i]}/`, payload)
 
                         console.log("Response experience updated :", resExpe)
                     }
 
 
                     for (var i = values.experiences.length; i < expe_ids.length; i++) {
-                        const resExpe = await axiosIntance.delete(`http://127.0.0.1:8000/job/experience/${expe_ids[i]}/`)
+                        const resExpe = await axiosDELETE(`job/experience/${expe_ids[i]}/`)
 
                         console.log("Response experience  deleted:", resExpe)
                     }
@@ -710,18 +754,20 @@ const InputForm = () => {
 
                         if (values.languages[i].languageName.length !== 0) {
 
-                            const resLang = await axiosIntance.put(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`, {
+                            const payload ={
                                 language: values.languages[i].languageName[0],
                                 read: values.languages[i].read,
                                 write: values.languages[i].write,
                                 speak: values.languages[i].speak,
                                 candidate: candidate_id
-                            })
+                            }
+
+                            const resLang = await axiosPUT(`job/language/${lang_ids[i]}/`, payload)
 
                             console.log("Response language updated:", resLang)
 
                         } else {
-                            const resLang = await axiosIntance.delete(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`)
+                            const resLang = await axiosDELETE(`job/language/${lang_ids[i]}/`)
 
                             console.log("Response language deleted :", resLang)
 
@@ -739,18 +785,20 @@ const InputForm = () => {
 
                         if (values.languages[i].languageName.length !== 0) {
 
-                            const resLang = await axiosIntance.put(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`, {
+                            const payload =  {
                                 language: values.languages[i].languageName[0],
                                 read: values.languages[i].read,
                                 write: values.languages[i].write,
                                 speak: values.languages[i].speak,
                                 candidate: candidate_id
-                            })
+                            }
+
+                            const resLang = await axiosPUT(`job/language/${lang_ids[i]}/`,payload)
 
                             console.log("Response language updated:", resLang)
 
                         } else {
-                            const resLang = await axiosIntance.delete(`http://127.0.0.1:8000/job/language/${lang_ids[i]}/`)
+                            const resLang = await axiosDELETE(`job/language/${lang_ids[i]}/`)
 
                             console.log("Response language deleted :", resLang)
 
@@ -762,13 +810,16 @@ const InputForm = () => {
 
                         if (values.languages[i].languageName.length !== 0) {
 
-                            const resLang = await axiosIntance.post("http://127.0.0.1:8000/job/language/", {
+                            const payload = {
                                 language: values.languages[i].languageName[0],
                                 read: values.languages[i].read,
                                 write: values.languages[i].write,
                                 speak: values.languages[i].speak,
                                 candidate: candidate_id
-                            })
+
+                            }
+
+                            const resLang = await axiosPOST("job/language/", payload)
 
                             console.log("Response language created:", resLang)
 
@@ -789,16 +840,18 @@ const InputForm = () => {
 
                         if (values.technologies[i].technologyName.length !== 0) {
 
-                            const resTech = await axiosIntance.put(`http://127.0.0.1:8000/job/technology/${tech_ids[i]}/`, {
+                            const payload =  {
                                 technology: values.technologies[i].technologyName[0],
                                 ranting: values.technologies[i].rating,
                                 candidate: candidate_id
-                            })
+                            }
+
+                            const resTech = await axiosPUT(`job/technology/${tech_ids[i]}/`,payload)
 
                             console.log("Response technology updated:", resTech)
 
                         } else {
-                            const resTech = await axiosIntance.delete(`http://127.0.0.1:8000/job/technology/${tech_ids[i]}/`)
+                            const resTech = await axiosDELETE(`job/technology/${tech_ids[i]}/`)
 
                             console.log("Response technology deleted :", resTech)
 
@@ -815,16 +868,18 @@ const InputForm = () => {
 
                         if (values.technologies[i].technologyName.length !== 0) {
 
-                            const resTech = await axiosIntance.put(`http://127.0.0.1:8000/job/technology/${tech_ids[i]}/`, {
+                            const payload =  {
                                 technology: values.technologies[i].technologyName[0],
                                 ranting: values.technologies[i].rating,
                                 candidate: candidate_id
-                            })
+                            }
+
+                            const resTech = await axiosPUT(`job/technology/${tech_ids[i]}/`,payload)
 
                             console.log("Response technology updated:", resTech)
 
                         } else {
-                            const resTech = await axiosIntance.delete(`http://127.0.0.1:8000/job/technology/${tech_ids[i]}/`)
+                            const resTech = await axiosDELETE(`job/technology/${tech_ids[i]}/`)
 
                             console.log("Response technology deleted :", resTech)
 
@@ -835,12 +890,15 @@ const InputForm = () => {
                     for (var i = tech_ids.length; i < values.technologies.length; i++) {
                         if (values.technologies[i].technologyName.length !== 0) {
 
-
-                            const resTech = await axiosIntance.post("http://127.0.0.1:8000/job/technology/", {
+                            const payload = {
                                 technology: values.technologies[i].technologyName[0],
                                 ranting: values.technologies[i].rating,
                                 candidate: candidate_id
-                            })
+
+                            }
+
+
+                            const resTech = await axiosPOST("job/technology/", payload)
 
                             console.log("Response techmology created:", resTech)
 
@@ -857,12 +915,15 @@ const InputForm = () => {
             if (values.references.length != 0) {
                 if (values.references.length === refe_ids.length) {
                     for (var i = 0; i < values.references.length; i++) {
-                        const resRefe = await axiosIntance.put(`http://127.0.0.1:8000/job/reference/${refe_ids[i]}/`, {
+
+                        const payload ={
                             refe_name: values.references[i].name,
                             refe_contact_no: values.references[i].contactNo,
                             refe_relation: values.references[i].relation,
                             candidate: candidate_id
-                        })
+                        }
+
+                        const resRefe = await axiosPUT(`job/reference/${refe_ids[i]}/`,payload )
 
                         console.log("Response reference updated:", resRefe)
                     }
@@ -871,25 +932,30 @@ const InputForm = () => {
                 else if (values.references.length >= refe_ids.length) {
 
                     for (var i = 0; i < refe_ids.length; i++) {
-                        const resRefe = await axiosIntance.put(`http://127.0.0.1:8000/job/reference/${refe_ids[i]}/`, {
+
+                        const payload ={
                             refe_name: values.references[i].name,
                             refe_contact_no: values.references[i].contactNo,
                             refe_relation: values.references[i].relation,
                             candidate: candidate_id
-                        })
+                        }
+
+                        const resRefe = await axiosPUT(`job/reference/${refe_ids[i]}/`, payload )
 
                         console.log("Response reference updated:", resRefe)
                     }
 
 
                     for (var i = refe_ids.length; i < values.references.length; i++) {
-
-                        const resRefe = await axiosIntance.post("http://127.0.0.1:8000/job/reference/", {
+                        const payload = {
                             refe_name: values.references[i].name,
                             refe_contact_no: values.references[i].contactNo,
                             refe_relation: values.references[i].relation,
                             candidate: candidate_id
-                        })
+
+                        }
+
+                        const resRefe = await axiosPOST("job/reference/", payload)
 
                         console.log("Response reference created:", resRefe)
                     }
@@ -899,19 +965,21 @@ const InputForm = () => {
 
                 else if (values.references.length <= refe_ids.length) {
                     for (var i = 0; i < values.references.length; i++) {
-                        const resRefe = await axiosIntance.put(`http://127.0.0.1:8000/job/reference/${refe_ids[i]}/`, {
+
+                        const payload ={
                             refe_name: values.references[i].name,
                             refe_contact_no: values.references[i].contactNo,
                             refe_relation: values.references[i].relation,
                             candidate: candidate_id
-                        })
+                        }
+                        const resRefe = await axiosPUT(`job/reference/${refe_ids[i]}/`, payload)
 
                         console.log("Response reference updated:", resRefe)
                     }
 
 
                     for (var i = values.references.length; i < refe_ids.length; i++) {
-                        const resRefe = await axiosIntance.delete(`http://127.0.0.1:8000/job/reference/${refe_ids[i]}/`)
+                        const resRefe = await axiosDELETE(`job/reference/${refe_ids[i]}/`)
 
                         console.log("Response reference deleted:", resRefe)
                     }
@@ -925,14 +993,17 @@ const InputForm = () => {
             if (values.demoLocation.length != 0) {
                 if (values.demoLocation.length === pref_ids.length) {
                     for (var i = 0; i < values.demoLocation.length; i++) {
-                        const resPref = await axiosIntance.put(`http://127.0.0.1:8000/job/preference/${pref_ids[i]}/`, {
+
+                        const  payload = {
                             prefer_location: values.demoLocation[i],
                             notice_period: values.noticePeriod,
                             expected_ctc: values.expectedCTC,
                             current_ctc: values.currentCTC,
                             department: values.department,
                             candidate: candidate_id
-                        })
+                        }
+
+                        const resPref = await axiosPUT(`job/preference/${pref_ids[i]}/`, payload )
 
                         console.log("Response preference updated:", resPref)
                     }
@@ -942,29 +1013,34 @@ const InputForm = () => {
                 else if (values.demoLocation.length >= pref_ids.length) {
 
                     for (var i = 0; i < pref_ids.length; i++) {
-                        const resPref = await axiosIntance.put(`http://127.0.0.1:8000/job/preference/${pref_ids[i]}/`, {
+
+                        const payload = {
                             prefer_location: values.demoLocation[i],
                             notice_period: values.noticePeriod,
                             expected_ctc: values.expectedCTC,
                             current_ctc: values.currentCTC,
                             department: values.department,
                             candidate: candidate_id
-                        })
+                        }
+
+                        const resPref = await axiosPUT(`job/preference/${pref_ids[i]}/`, payload )
 
                         console.log("Response preference updated:", resPref)
                     }
 
 
                     for (var i = pref_ids.length; i < values.demoLocation.length; i++) {
-
-                        const resPref = await axiosIntance.post("http://127.0.0.1:8000/job/preference/", {
+                        const payload = {
                             prefer_location: values.demoLocation[i],
                             notice_period: values.noticePeriod,
                             expected_ctc: values.expectedCTC,
                             current_ctc: values.currentCTC,
                             department: values.department,
                             candidate: candidate_id
-                        })
+
+                        }
+
+                        const resPref = await axiosPOST("job/preference/", payload)
 
                         console.log("Response preference created:", resPref)
 
@@ -974,21 +1050,24 @@ const InputForm = () => {
 
                 else if (values.demoLocation.length <= pref_ids.length) {
                     for (var i = 0; i < values.demoLocation.length; i++) {
-                        const resPref = await axiosIntance.put(`http://127.0.0.1:8000/job/preference/${pref_ids[i]}/`, {
+ 
+                        const payload = {
                             prefer_location: values.demoLocation[i],
                             notice_period: values.noticePeriod,
                             expected_ctc: values.expectedCTC,
                             current_ctc: values.currentCTC,
                             department: values.department,
                             candidate: candidate_id
-                        })
+                        }
+
+                        const resPref = await axiosPUT(`job/preference/${pref_ids[i]}/`, payload)
 
                         console.log("Response preference updated:", resPref)
                     }
 
 
                     for (var i = values.demoLocation.length; i < pref_ids.length; i++) {
-                        const resPref = await axiosIntance.delete(`http://127.0.0.1:8000/job/preference/${pref_ids[i]}/`)
+                        const resPref = await axiosDELETE(`job/preference/${pref_ids[i]}/`)
 
                         console.log("Response preference deleted:", resPref)
                     }

@@ -6,11 +6,14 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 
 import * as Yup from 'yup'
 
-import axiosIntance from '../../axiosApi'
+
 
 import { useNavigate } from 'react-router-dom'
 
 import { Link } from 'react-router-dom'
+
+import { axiosPOST } from '../../axiosApi'
+
 
 const RegistrationForm = () => {
 
@@ -38,7 +41,7 @@ const onSubmit = async (values, form) => {
   console.log("abc" , form)
 try{
 
-  const res = await axiosIntance.post("http://127.0.0.1:8000/register/",{
+  const res = await axiosPOST("register/",{
     username:values.username,
     email:values.email,
     password:values.password,

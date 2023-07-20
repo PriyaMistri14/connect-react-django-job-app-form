@@ -15,6 +15,11 @@ from django.core.paginator import Paginator # for pagination
 from django.http.response import JsonResponse, HttpResponse
 
 
+from django.db.models import Q   # for multiple filters
+
+
+
+
 
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated,IsAdminUser
@@ -173,22 +178,86 @@ class GetCities(APIView):
 
 
 def Pagination(request):
-    candidates = CandidateMaster.objects.all().order_by('id').values()
+    # candidates = CandidateMaster.objects.all().order_by('id').values()
    
     page_no = request.GET.get('page')[:-1]
     data_per_page = int(request.GET.get('data_per_page')) 
+    sort = request.GET.get('sort') 
+    order = request.GET.get('order')   #asc , desc
+    search = request.GET.get('search')
 
-    print("..............................page_no and data_per_page............", page_no, data_per_page)
+    if search and search != "":
+
+        if sort and order and sort == 'fname':
+            candidates = CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('fname').values() if order == 'asc' else CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('-fname').values() 
+
+        elif sort and order and sort == 'lname':
+            candidates = CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('lname').values() if order == 'asc' else CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('-lname').values() 
+
+        elif sort and order and sort == 'surname':
+            candidates = CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('surname').values() if order == 'asc' else CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('-surname').values() 
+
+        elif sort and order and sort == 'contact_no':
+            candidates = CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('contact_no').values() if order == 'asc' else CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('-contact_no').values() 
+
+        elif sort and order and sort == 'email':
+            candidates = CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('email').values() if order == 'asc' else CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('-email').values() 
+
+        elif sort and order and sort == 'state':
+            candidates = CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('state').values() if order == 'asc' else CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('-state').values() 
+
+        elif sort and order and sort == 'city':
+            candidates = CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('city').values() if order == 'asc' else CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('-city').values() 
+        else:
+            candidates = CandidateMaster.objects.all().filter(Q(fname__icontains=search) | Q(lname__icontains=search) | Q(surname__icontains=search) | Q(contact_no__icontains=search)  | Q(email__icontains=search) | Q(state__icontains=search) | Q(city__icontains=search)  ).order_by('id').values()
+
+
+
+    else:
+
+        if sort and order and sort == 'fname':
+            candidates = CandidateMaster.objects.all().order_by('fname').values() if order == 'asc' else CandidateMaster.objects.all().order_by('-fname').values() 
+
+        elif sort and order and sort == 'lname':
+            candidates = CandidateMaster.objects.all().order_by('lname').values() if order == 'asc' else CandidateMaster.objects.all().order_by('-lname').values() 
+
+        elif sort and order and sort == 'surname':
+            candidates = CandidateMaster.objects.all().order_by('surname').values() if order == 'asc' else CandidateMaster.objects.all().order_by('-surname').values() 
+
+        elif sort and order and sort == 'contact_no':
+            candidates = CandidateMaster.objects.all().order_by('contact_no').values() if order == 'asc' else CandidateMaster.objects.all().order_by('-contact_no').values() 
+
+        elif sort and order and sort == 'email':
+            candidates = CandidateMaster.objects.all().order_by('email').values() if order == 'asc' else CandidateMaster.objects.all().order_by('-email').values() 
+
+        elif sort and order and sort == 'state':
+            candidates = CandidateMaster.objects.all().order_by('state').values() if order == 'asc' else CandidateMaster.objects.all().order_by('-state').values() 
+
+        elif sort and order and sort == 'city':
+            candidates = CandidateMaster.objects.all().order_by('city').values() if order == 'asc' else CandidateMaster.objects.all().order_by('-city').values() 
+        else:
+            candidates = CandidateMaster.objects.all().order_by('id').values()
+        candidates = CandidateMaster.objects.all().order_by('id').values()
+        
+
+
+
+
+
+    print("..............................page_no and data_per_page. sort , order ., serach...........", page_no, data_per_page, sort ,order, search)
     p = Paginator(candidates, data_per_page)
-    lst = []
-  
+    lst = [] 
     try:
         page_obj = p.get_page(page_no)
     except: 
         page_obj = p.page(1) 
 
     serialize_data = [c for c in page_obj]
-    print("@@@@@@@@@@@@@@@@@@@@serialized data", serialize_data)    
+    no_of_page = p.num_pages
+    serialize_data.append(no_of_page) 
+ 
+
+    print("@@@@@@@@@@@@@@@@@@@@serialized data", serialize_data, "no of pages: ", no_of_page)    
 
  
     return JsonResponse(serialize_data, safe=False)  
